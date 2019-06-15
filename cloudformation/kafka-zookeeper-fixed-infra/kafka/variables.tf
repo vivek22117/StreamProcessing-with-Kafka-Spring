@@ -21,9 +21,14 @@ variable "default_region" {
   default = "us-east-1"
 }
 
-variable "private_ips" {
+variable "kafka_private_ips" {
   type = "string"
   default = "10.0.0.5,10.0.2.5,10.0.4.5"
+}
+
+variable "zk_private_ips" {
+  type = "string"
+  default = "10.0.0.6,10.0.2.6,10.0.4.6"
 }
 
 variable "kafka_cluster_azs" {

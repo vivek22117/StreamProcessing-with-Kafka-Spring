@@ -1,4 +1,6 @@
-// Security Group for Jenkins Master
+#########################################
+# Kafka cluster security group
+#########################################
 resource "aws_security_group" "kafka_sg" {
   name        = "KafkaSecurityGroup"
   description = "Kafka security group to allow traffic"
@@ -8,7 +10,7 @@ resource "aws_security_group" "kafka_sg" {
     create_before_destroy = true
   }
 
-  tags = "${local.common_tags}"
+  tags = "${merge(local.common_tags, map("Name", "Kafka-SG-${data.terraform_remote_state.vpc.vpc_id}"))}"
 }
 
 resource "aws_security_group_rule" "allow_traffic_from_8080" {
@@ -59,5 +61,61 @@ resource "aws_security_group_rule" "allow_traffic_from_9999" {
   protocol          = "tcp"
   security_group_id = "${aws_security_group.kafka_sg.id}"
   cidr_blocks       = ["0.0.0.0/0"]
+}
+
+
+#############################################
+# Zookeeper cluster security group
+#############################################
+resource "aws_security_group" "zookeeper_sg" {
+  name        = "ZookeeperSecurityGroup"
+  description = "Zookeeper security group to allow traffic"
+  vpc_id      = "${data.terraform_remote_state.vpc.vpc_id}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tags = "${merge(local.common_tags, map("Name", "ZK-SG-${data.terraform_remote_state.vpc.vpc_id}"))}"
+}
+
+resource "aws_security_group_rule" "allow_traffic_from_2181" {
+  description = "Allow traffic from zookeeper external port"
+  type                     = "ingress"
+  from_port                = 2181
+  to_port                  = 2181
+  protocol                 = "tcp"
+  security_group_id        = "${aws_security_group.zookeeper_sg.id}"
+  cidr_blocks = ["10.0.0.0/20"]
+}
+
+resource "aws_security_group_rule" "allow_ssh_traffic_zk" {
+  description = "Allow ssh traffic from bastion"
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  security_group_id = "${aws_security_group.zookeeper_sg.id}"
+  source_security_group_id = "${data.terraform_remote_state.vpc.bastion_sg}"
+}
+
+resource "aws_security_group_rule" "allow_traffic_from_2888" {
+  description = "Allow traffic from zookeeper internal port"
+  type              = "ingress"
+  from_port         = 2888
+  to_port           = 2888
+  protocol          = "tcp"
+  security_group_id = "${aws_security_group.kafka_sg.id}"
+  cidr_blocks       = ["${data.terraform_remote_state.vpc.vpc_cidr}"]
+}
+
+resource "aws_security_group_rule" "allow_traffic_from_3888" {
+  description = "Allow traffic from zookeeper internal port"
+  type              = "ingress"
+  from_port         = 3888
+  to_port           = 3888
+  protocol          = "tcp"
+  security_group_id = "${aws_security_group.kafka_sg.id}"
+  cidr_blocks       = ["${data.terraform_remote_state.vpc.vpc_cidr}"]
 }
 

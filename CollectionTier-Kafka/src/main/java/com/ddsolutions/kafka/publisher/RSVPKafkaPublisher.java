@@ -1,4 +1,4 @@
-package com.ddsolutions.kafka.producer;
+package com.ddsolutions.kafka.publisher;
 
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;

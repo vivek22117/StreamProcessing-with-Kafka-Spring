@@ -9,6 +9,10 @@ provider "template" {
   version = "2.1.2"
 }
 
+provider "null" {
+  version = "2.1.2"
+}
+
 ######################################################
 # Terraform configuration block is used to define backend
 # Interpolation sytanx is not allowed in Backend
@@ -20,7 +24,7 @@ terraform {
     profile        = "doubledigit"
     bucket         = "teamconcept-tfstate-dev-us-east-1"
     dynamodb_table = "teamconcept-tfstate-dev-us-east-1"
-    key            = "state/dev/kafka/fixed-resource/terraform.tfstate"
+    key            = "state/dev/kafka/kafka-cluster/terraform.tfstate"
     region         = "us-east-1"
     encrypt        = "true"
   }
