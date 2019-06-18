@@ -1,4 +1,4 @@
-package com.ddsolutions.kafka.twitter.boot.publisher;
+package com.ddsolutions.kafka.twitter.publisher;
 
 import org.springframework.stereotype.Component;
 

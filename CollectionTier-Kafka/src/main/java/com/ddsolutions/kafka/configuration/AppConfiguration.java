@@ -55,7 +55,7 @@ public class AppConfiguration {
 
     @Bean
     public NewTopic createNewTopic(){
-        return new NewTopic(topicName, 5, (short) 3);
+        return new NewTopic(topicName, 5, (short) 1);
     }
 
     @Bean

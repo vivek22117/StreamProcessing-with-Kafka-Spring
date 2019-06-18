@@ -1,4 +1,4 @@
-package com.ddsolutions.kafka.twitter.boot.producer;
+package com.ddsolutions.kafka.twitter.producer;
 
 import com.twitter.hbc.ClientBuilder;
 import com.twitter.hbc.core.Client;
@@ -9,22 +9,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-@Component
+@Service
 public class TwitterProducer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TwitterProducer.class);
 
     private ClientBuilder clientBuilder;
-    private final KafkaTemplate<String, String> kafkaTemplate;
-    private final NewTopic topic;
+    private KafkaTemplate<String, Object> kafkaTemplate;
+    private NewTopic topic;
 
     @Autowired
-    public TwitterProducer(ClientBuilder clientBuilder, KafkaTemplate<String, String> kafkaTemplate,
+    public TwitterProducer(ClientBuilder clientBuilder, KafkaTemplate<String, Object> kafkaTemplate,
                            NewTopic topic) {
         this.clientBuilder = clientBuilder;
         this.kafkaTemplate = kafkaTemplate;

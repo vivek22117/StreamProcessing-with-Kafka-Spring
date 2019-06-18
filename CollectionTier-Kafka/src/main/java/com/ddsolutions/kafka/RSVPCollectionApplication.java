@@ -1,6 +1,8 @@
 package com.ddsolutions.kafka;
 
 import com.ddsolutions.kafka.handler.RSVPWebSocketHandler;
+import com.ddsolutions.kafka.publisher.RSVPKafkaPublisher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;

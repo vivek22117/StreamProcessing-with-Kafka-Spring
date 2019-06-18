@@ -1,4 +1,4 @@
-package com.ddsolutions.kafka.twitter.boot.configuration;
+package com.ddsolutions.kafka.twitter.configuration;
 
 import com.google.common.collect.Lists;
 import com.twitter.hbc.ClientBuilder;
@@ -13,7 +13,6 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,16 +57,14 @@ public class TwitterAppConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
     public KafkaTemplate<String, Object> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
     @Bean
     public NewTopic createNewTopic() {
-        return new NewTopic(topicName, 5, (short) 3);
+        return new NewTopic(topicName, 5, (short) 1);
     }
-
 
     @Bean
     public ClientBuilder creatTwitterClient(@Value("${kafka.consumerKey}") String consumerKey,
@@ -79,7 +76,7 @@ public class TwitterAppConfiguration {
         StatusesFilterEndpoint hosebirdEndpoint = new StatusesFilterEndpoint();
 
         // Optional: set up some followings and track terms
-        List<String> terms = Lists.newArrayList("kafka");
+        List<String> terms = Lists.newArrayList("kafka", "bitcoin", "cloud");
         hosebirdEndpoint.trackTerms(terms);
 
         // These secrets should be read from a config file

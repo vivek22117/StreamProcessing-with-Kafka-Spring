@@ -44,7 +44,7 @@ public class RSVPKafkaPublisher {
     }
 
     public void sendRSVPMessageByProducerRecord(WebSocketMessage<?> rsvpMessage) {
-        ProducerRecord<String, Object> producerRecord = new ProducerRecord<>(topicName, rsvpMessage);
+        ProducerRecord<String, Object> producerRecord = new ProducerRecord<>(topicName, rsvpMessage.getPayload().toString());
 
         kafkaTemplate.send(producerRecord)
                 .addCallback(new ListenableFutureCallback<SendResult<String, Object>>() {
