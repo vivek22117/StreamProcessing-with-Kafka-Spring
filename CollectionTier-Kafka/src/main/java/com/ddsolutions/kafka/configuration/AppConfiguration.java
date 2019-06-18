@@ -19,14 +19,18 @@ import java.util.Map;
 @Configuration
 public class AppConfiguration {
 
-    @Autowired
-    private KafkaProperties kafkaProperties;
+    private final KafkaProperties kafkaProperties;
 
     @Value("${bootstrap.servers}")
     private String bootstrapServers;
 
     @Value("${kafka.rsvp.topic}")
     private String topicName;
+
+    @Autowired
+    public AppConfiguration(KafkaProperties kafkaProperties) {
+        this.kafkaProperties = kafkaProperties;
+    }
 
     @Bean
     public Map<String, Object> producerConfig(){
@@ -51,7 +55,7 @@ public class AppConfiguration {
 
     @Bean
     public NewTopic createNewTopic(){
-        return new NewTopic(topicName,5, (short) 3);
+        return new NewTopic(topicName, 5, (short) 3);
     }
 
     @Bean

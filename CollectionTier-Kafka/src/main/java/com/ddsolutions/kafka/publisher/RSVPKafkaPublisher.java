@@ -1,5 +1,6 @@
 package com.ddsolutions.kafka.publisher;
 
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -20,22 +21,25 @@ public class RSVPKafkaPublisher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RSVPKafkaPublisher.class);
 
+    @Value("${kafka.rsvp.topic}")
+    private String topicName;
+
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final KafkaProducer<String, Object> kafkaProducer;
-    private final String topicName;
+    private final NewTopic topic;
 
     @Autowired
     public RSVPKafkaPublisher(
             final KafkaProducer<String, Object> kafkaProducer,
             final KafkaTemplate<String, Object> kafkaTemplate,
-            @Value("${kafka.rsvp.topic}") final String topicName){
+            final NewTopic topic){
         this.kafkaProducer = kafkaProducer;
         this.kafkaTemplate = kafkaTemplate;
-        this.topicName = topicName;
+        this.topic = topic;
     }
 
     public void sendRSVPMessages(WebSocketMessage<?> rsvpMessage){
-        ListenableFuture<SendResult<String, Object>> result = kafkaTemplate.send(topicName, rsvpMessage);
+        ListenableFuture<SendResult<String, Object>> result = kafkaTemplate.send(topic.name(), rsvpMessage);
 
     }
 

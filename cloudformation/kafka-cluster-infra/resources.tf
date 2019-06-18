@@ -5,6 +5,7 @@ data "template_file" "test" {
   vars {
     logical_id = "${var.logical_id}${count.index}"
     waitcondition_logical_id = "${var.waitcondition_logical_id}${count.index}"
+    volume_id = "${element(data.terraform_remote_state.kafka_fixed_resource.kafka_ec2_volumes, count.index)}"
 
     is_monitoring_enabled = "${var.is_monitoring_enabled}"
 
@@ -48,4 +49,8 @@ resource "aws_cloudformation_stack" "kafka_cluster" {
   on_failure = "DO_NOTHING"
 
   template_body = "${data.template_file.test.rendered}"
+}
+
+output "template_file" {
+  value = "${data.template_file.test.*.id}"
 }

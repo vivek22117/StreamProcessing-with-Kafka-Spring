@@ -298,6 +298,16 @@
           "Timeout": "PT5M"
         }
       }
+    },
+    "Kafka1VolumeAttachment": {
+      "Type": "AWS::EC2::VolumeAttachment",
+      "Properties": {
+        "InstanceId": {
+          "Ref": "${logical_id}"
+        },
+        "VolumeId": "${volume_id}",
+        "Device": "/dev/sdf"
+      }
     }
   }
 }

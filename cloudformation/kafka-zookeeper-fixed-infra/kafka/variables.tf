@@ -14,6 +14,15 @@ variable "volume_size_data" {
   description = "size of ebs block"
 }
 
+variable "kafka_cluster_size" {
+  type = "string"
+  description = "Kafka cluster size"
+}
+
+variable "zk_quoram_size" {
+  type = "string"
+  description = "Kafka zookeeper size"
+}
 
 //Default Variables
 variable "default_region" {
@@ -23,12 +32,12 @@ variable "default_region" {
 
 variable "kafka_private_ips" {
   type = "string"
-  default = "10.0.0.5,10.0.2.5,10.0.4.5"
+  default = "10.0.1.5,10.0.3.5,10.0.5.5"
 }
 
 variable "zk_private_ips" {
   type = "string"
-  default = "10.0.0.6,10.0.2.6,10.0.4.6"
+  default = "10.0.1.6,10.0.3.6,10.0.5.6"
 }
 
 variable "kafka_cluster_azs" {
