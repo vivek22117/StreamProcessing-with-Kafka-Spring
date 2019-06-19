@@ -2,13 +2,16 @@ package com.ddsolutions.kafka.twitter.configuration;
 
 import com.google.common.collect.Lists;
 import com.twitter.hbc.ClientBuilder;
+import com.twitter.hbc.core.Client;
 import com.twitter.hbc.core.Constants;
 import com.twitter.hbc.core.Hosts;
 import com.twitter.hbc.core.HttpHosts;
 import com.twitter.hbc.core.endpoint.StatusesFilterEndpoint;
+import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,8 @@ import org.springframework.kafka.core.ProducerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Configuration
 public class TwitterAppConfiguration {
@@ -67,11 +72,15 @@ public class TwitterAppConfiguration {
     }
 
     @Bean
-    public ClientBuilder creatTwitterClient(@Value("${kafka.consumerKey}") String consumerKey,
-                                            @Value("${kafka.consumerSecret}") String consumerSecret,
-                                            @Value("${kafka.token}") String token,
-                                            @Value("${kafka.secret}") String secret) {
-        // Declare the host you want to connect to, the endpoint, and authentication (basic auth or oauth) */
+    public KafkaProducer<String, String> getKafkaProducer() {
+        return new KafkaProducer<String, String>(producerConfig());
+    }
+
+    @Bean
+    public Client creatTwitterClient(@Value("${kafka.consumerKey}") String consumerKey,
+                                     @Value("${kafka.consumerSecret}") String consumerSecret,
+                                     @Value("${kafka.token}") String token,
+                                     @Value("${kafka.secret}") String secret) {
         Hosts hosebirdHosts = new HttpHosts(Constants.STREAM_HOST);
         StatusesFilterEndpoint hosebirdEndpoint = new StatusesFilterEndpoint();
 
@@ -86,8 +95,13 @@ public class TwitterAppConfiguration {
                 .name("Twitter-Client-01")                              // optional: mainly for the logs
                 .hosts(hosebirdHosts)
                 .authentication(hosebirdAuth)
-                .endpoint(hosebirdEndpoint);
+                .endpoint(hosebirdEndpoint).processor(new StringDelimitedProcessor(getBlockingQueue()));
 
-        return builder;
+        return builder.build();
+    }
+
+    @Bean
+    public BlockingQueue<String> getBlockingQueue(){
+        return new LinkedBlockingQueue<>(1000);
     }
 }
