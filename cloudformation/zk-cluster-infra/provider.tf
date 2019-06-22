@@ -27,7 +27,7 @@ terraform {
     profile        = "doubledigit"
     bucket         = "teamconcept-tfstate-dev-us-east-1"
     dynamodb_table = "teamconcept-tfstate-dev-us-east-1"
-    key            = "state/dev/kafka/kafka-cluster/terraform.tfstate"
+    key            = "state/dev/kafka/zk-cluster/terraform.tfstate"
     region         = "us-east-1"
     encrypt        = "true"
   }

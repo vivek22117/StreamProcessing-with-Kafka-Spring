@@ -30,7 +30,7 @@ resource "aws_security_group_rule" "allow_ssh_traffic" {
   to_port           = 22
   protocol          = "tcp"
   security_group_id = "${aws_security_group.kafka_sg.id}"
-  source_security_group_id = "${data.terraform_remote_state.vpc.bastion_sg}"
+  cidr_blocks = ["0.0.0.0/0"]
 }
 
 resource "aws_security_group_rule" "allow_traffic_from_8778" {
@@ -59,6 +59,16 @@ resource "aws_security_group_rule" "allow_traffic_from_9999" {
   from_port         = 9999
   to_port           = 9999
   protocol          = "tcp"
+  security_group_id = "${aws_security_group.kafka_sg.id}"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "allow_all_outbound_kafka" {
+  description = "Allow all outgoing traffic"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
   security_group_id = "${aws_security_group.kafka_sg.id}"
   cidr_blocks       = ["0.0.0.0/0"]
 }
@@ -96,7 +106,7 @@ resource "aws_security_group_rule" "allow_ssh_traffic_zk" {
   to_port           = 22
   protocol          = "tcp"
   security_group_id = "${aws_security_group.zookeeper_sg.id}"
-  source_security_group_id = "${data.terraform_remote_state.vpc.bastion_sg}"
+  cidr_blocks = ["0.0.0.0/0"]
 }
 
 resource "aws_security_group_rule" "allow_traffic_from_2888" {
@@ -117,5 +127,15 @@ resource "aws_security_group_rule" "allow_traffic_from_3888" {
   protocol          = "tcp"
   security_group_id = "${aws_security_group.zookeeper_sg.id}"
   cidr_blocks       = ["${data.terraform_remote_state.vpc.vpc_cidr}"]
+}
+
+resource "aws_security_group_rule" "allow_all_outbound_zk" {
+  description = "Allow all outgoing traffic"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  security_group_id = "${aws_security_group.zookeeper_sg.id}"
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 

@@ -19,55 +19,10 @@ variable "component_name" {
   description = "Component name for resources"
 }
 
-// Kafka variables
-variable "kafka_cluster_size" {
+// Zookeeper variables
+variable "zk_cluster_size" {
   type = "string"
-  description = "Kafka cluster size"
-}
-
-variable "is_monitoring_enabled" {
-  type = "string"
-  description = "Monitoring enabled or not in EC2"
-}
-
-variable "topic_deletion_enabled" {
-  type = "string"
-  description = "Deteltion of kafka topic is enabled or not"
-}
-
-variable "num_partition" {
-  type = "string"
-  description = "Number of partition for specific topic"
-}
-
-variable "default_replication" {
-  type = "string"
-  description = "Default replication factor for each partition"
-}
-
-variable "min_insync_replica" {
-  type = "string"
-  description = "Minimum insync replicas"
-}
-
-variable "log_retention" {
-  type = "string"
-  description = "Log retention hours in kafka"
-}
-
-variable "zk_connection_timeout" {
-  type = "string"
-  description = "Zookeeper connection timeout"
-}
-
-variable "auto_create_topic" {
-  type = "string"
-  description = "Auto create kafka topic enabled or not"
-}
-
-variable "offset_replication" {
-  type = "string"
-  description = "Offset replication factor"
+  description = "Zookeeper cluster size"
 }
 
 variable "ami_id" {
@@ -80,6 +35,26 @@ variable "ec2_instance_type" {
   description = "EC2 instance type"
 }
 
+variable "sync_limit" {
+  type = "string"
+  description = "Sync limit for zookeeper"
+}
+
+variable "init_limit" {
+  type = "string"
+  description = "Zookeeper init limit"
+}
+
+variable "tick_time" {
+  type = "string"
+  description = "It is used for heartbeats and timeouts especially."
+}
+
+variable "max_clinet_conn" {
+  type = "string"
+  description = "Maximum allowed client connections for a Zk server. Set this to 0 (unlimited)"
+}
+
 //Default Variables
 variable "default_region" {
   type    = "string"
@@ -89,13 +64,13 @@ variable "default_region" {
 variable "cf_stack_name" {
   type = "string"
   description = "Kafka cluster stack name"
-  default = "kafka-cluster-stack"
+  default = "zookeeper-cluster-stack"
 }
 
-variable "zk_port" {
+variable "zk_internal_port" {
   type = "string"
-  description = "Zookeeper external port"
-  default = "2181"
+  description = "Zookeeper internal port"
+  default = "2888:3888"
 }
 
 variable "kafka_key_pair" {
@@ -104,7 +79,7 @@ variable "kafka_key_pair" {
   default = "kafka-key"
 }
 
-variable "kafka_cluster_azs" {
+variable "zk_cluster_azs" {
   type = "list"
   default = ["us-east-1a", "us-east-1b", "us-east-1c"]
 }
