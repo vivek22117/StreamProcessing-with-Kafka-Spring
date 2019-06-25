@@ -1,30 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "AWS CloudFormation sample template that contains Zookeeper fixed resources",
-  "Parameters": {
-    "Env": {
-      "Description": "Environment to which cft is created",
-      "Type": "String"
-    },
-    "VPCStackName": {
-      "Description": "VPC under which the resources are created",
-      "Type": "String"
-    },
-    "ZKFixedResourceStack": {
-      "Description": "Stack name of ZK fixed reources",
-      "Type": "String"
-    },
-    "InstanceType": {
-      "Description": "Type of instance",
-      "Type": "String",
-      "Default": "t2.small"
-    },
-    "ZKKeyPair": {
-      "Description": "Key pair for ec2 instance",
-      "Type": "String",
-      "Default": "jenkins-master"
-    }
-  },
   "Resources": {
     "ZookeeperEC2One": {
       "Metadata": {
@@ -252,7 +228,7 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": "${name[0]}"
+            "Value": "${name}"
           },
           {
             "Key": "team",
@@ -514,7 +490,7 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": "${name[1]}"
+            "Value": "${name}"
           },
           {
             "Key": "team",
@@ -776,7 +752,7 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": "${name[2]}"
+            "Value": "${name}"
           },
           {
             "Key": "team",

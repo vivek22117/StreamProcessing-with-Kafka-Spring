@@ -26,14 +26,20 @@ public class KafkaPublisher {
         this.kafkaProducer = kafkaProducer;
     }
 
+    public void publishTwitterTweets(String tweet) {
+        ProducerRecord<String, String> producerRecord = new ProducerRecord<>(kafkaTopic.name(), "null", tweet);
 
-    public void publishTwitterTweets(String tweet){
-        ProducerRecord<String, String> producerRecord = new ProducerRecord<>(kafkaTopic.name(), tweet);
+        //add shutdown hook
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            LOGGER.info("closing kafka producer....");
+            kafkaProducer.close();
+            LOGGER.info("DONE!");
+        }));
 
         kafkaProducer.send(producerRecord, new Callback() {
             @Override
             public void onCompletion(RecordMetadata recordMetadata, Exception e) {
-                if (e != null){
+                if (e != null) {
                     LOGGER.error("Error while publishing rsvp: ", e);
                 } else {
                     LOGGER.info("Received metadata: \n" +

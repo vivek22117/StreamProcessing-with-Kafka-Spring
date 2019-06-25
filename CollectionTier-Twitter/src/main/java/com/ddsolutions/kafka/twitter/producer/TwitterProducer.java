@@ -59,6 +59,13 @@ public class TwitterProducer {
         // Client twitterClient = createTwitterClient(msgQueue);
         twitterClient.connect();
 
+        // add shutdown hook
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            LOGGER.info("stopping application...");
+            LOGGER.info("closing twitter client...");
+            twitterClient.stop();
+        }));
+
         while (!twitterClient.isDone()) {
             String msg = null;
 

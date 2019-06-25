@@ -20,9 +20,9 @@ data "template_file" "zookeeper" {
     zk_ip_2 = "${element(data.terraform_remote_state.kafka_fixed_resource.zk_eni_ips, 1)}"
     zk_ip_3 = "${element(data.terraform_remote_state.kafka_fixed_resource.zk_eni_ips, 2)}"
 
-    zk_server_1 = "${formatlist("%s:%s",data.terraform_remote_state.kafka_fixed_resource.zk_eni_ips[0], var.zk_internal_port))}"
-    zk_server_2 = "${formatlist("%s:%s",data.terraform_remote_state.kafka_fixed_resource.zk_eni_ips[1], var.zk_internal_port))}"
-    zk_server_3 = "${formatlist("%s:%s",data.terraform_remote_state.kafka_fixed_resource.zk_eni_ips[3], var.zk_internal_port))}"
+    zk_server_1 = "${format("%s:%s",data.terraform_remote_state.kafka_fixed_resource.zk_eni_ips[0], var.zk_internal_port)}"
+    zk_server_2 = "${format("%s:%s",data.terraform_remote_state.kafka_fixed_resource.zk_eni_ips[1], var.zk_internal_port)}"
+    zk_server_3 = "${format("%s:%s",data.terraform_remote_state.kafka_fixed_resource.zk_eni_ips[2], var.zk_internal_port)}"
 
     sync_limit = "${var.sync_limit}"
     init_limit = "${var.init_limit}"
@@ -33,7 +33,7 @@ data "template_file" "zookeeper" {
     ami_id = "${var.ami_id}"
     ec2_instance_type = "${var.ec2_instance_type}"
 
-    name = "zk-${random_shuffle.zk_id.result}"
+    name = "zk-cluster"
     owner_team = "${var.owner_team}"
     environment = "${var.environment}"
     component_name = "${var.component_name}"
