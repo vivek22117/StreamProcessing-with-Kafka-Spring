@@ -1,5 +1,6 @@
 package com.ddsolutins.kafka.consumer.config;
 
+import com.google.gson.JsonParser;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -45,6 +46,10 @@ public class ApplicationConfiguration {
     }
 
     @Bean
+    public JsonParser createJsonParser(){
+        return new JsonParser();
+    }
+    @Bean
     public Map<String, Object> consumerConfig() {
         Map<String, Object> props = new HashMap<>(kafkaProperties.buildProducerProperties());
 
@@ -53,6 +58,9 @@ public class ApplicationConfiguration {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        //to handle offset commit at code level
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
 
         return props;
     }
