@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -31,7 +32,7 @@ public class TwitterKafkaConsumer {
         this.publisher = publisher;
     }
 
-    public void consumeTwitterTweets() {
+    public void consumeTwitterTweets() throws IOException {
         kafkaConsumer.subscribe(Arrays.asList(kafkaTopic));
 
         while (true) {

@@ -1,6 +1,7 @@
 package com.ddsolutions.kafka.handler;
 
 import com.ddsolutions.kafka.publisher.RSVPKafkaPublisher;
+import com.ddsolutions.kafka.publisher.RSVPKinesisPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +16,21 @@ public class RSVPWebSocketHandler extends AbstractWebSocketHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(RSVPWebSocketHandler.class);
 
     private RSVPKafkaPublisher kafkaPublisher;
+    private RSVPKinesisPublisher kinesisPublisher;
 
     @Autowired
-    public RSVPWebSocketHandler(RSVPKafkaPublisher kafkaPublisher) {
+    public RSVPWebSocketHandler(RSVPKafkaPublisher kafkaPublisher, RSVPKinesisPublisher kinesisPublisher) {
         this.kafkaPublisher = kafkaPublisher;
+        this.kinesisPublisher = kinesisPublisher;
     }
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-        kafkaPublisher.sendRSVPMessageByProducerRecord(message);
+        try {
+            kafkaPublisher.sendRSVPMessageByProducerRecord(message);
+            kinesisPublisher.publish(message);
+        } catch (Exception ex) {
+            LOGGER.error("processing failed");
+        }
     }
 }

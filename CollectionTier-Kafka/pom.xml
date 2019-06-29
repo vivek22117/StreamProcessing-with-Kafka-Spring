@@ -43,6 +43,14 @@
       <artifactId>spring-kafka</artifactId>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/software.amazon.kinesis/amazon-kinesis-client -->
+    <dependency>
+      <groupId>software.amazon.kinesis</groupId>
+      <artifactId>amazon-kinesis-client</artifactId>
+      <version>2.2.0</version>
+    </dependency>
+
+
     <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -84,6 +92,12 @@
         <version>${spring-cloud.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind-bom</artifactId>
+        <version>2.9.8</version>
+        <type>pom</type>
       </dependency>
     </dependencies>
   </dependencyManagement>
