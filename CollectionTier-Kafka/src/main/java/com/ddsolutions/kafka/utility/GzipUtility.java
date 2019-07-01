@@ -54,11 +54,11 @@ public class GzipUtility {
         return (compressData[0] == (byte) (GZIPInputStream.GZIP_MAGIC)) && (compressData[1] == (byte) (GZIPInputStream.GZIP_MAGIC >> 8));
     }
 
-    public static byte[] serializeData(RSVPEventRecord rsvpEventRecord) {
+    public static byte[] serializeData(String rsvpEventRecord) {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
              ObjectOutputStream output = new ObjectOutputStream(bos)
         ) {
-            output.writeObject(rsvpEventRecord.toString());
+            output.writeObject(rsvpEventRecord);
             LOGGER.info("Object has been serialized");
             return Base64.getEncoder().encode(bos.toByteArray());
         } catch (Exception ex) {

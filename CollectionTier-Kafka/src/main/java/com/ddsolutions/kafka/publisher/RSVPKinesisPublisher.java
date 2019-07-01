@@ -3,6 +3,7 @@ package com.ddsolutions.kafka.publisher;
 import com.ddsolutions.kafka.domain.RSVPEventRecord;
 import com.ddsolutions.kafka.utility.GzipUtility;
 import com.ddsolutions.kafka.utility.JsonUtility;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
@@ -46,7 +47,17 @@ public class RSVPKinesisPublisher {
         RSVPEventRecord rsvpEventRecord = gson.fromJson(message.getPayload().toString(), RSVPEventRecord.class);
         List<RSVPEventRecord> rsvpEventRecords = Collections.singletonList(rsvpEventRecord);
 
+        // Do some processing or enhancement of data
         List<PutRecordsRequestEntry> requestEntries = rsvpEventRecords.stream()
+                .map(record -> {
+                    try {
+                        return jsonUtility.convertToString(rsvpEventRecord);
+                    } catch (JsonProcessingException e) {
+                        LOGGER.error("Unable to convert record into json object");
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
                 .map(GzipUtility::serializeData).filter(Objects::nonNull)
                 .map(GzipUtility::compressData).filter(Objects::nonNull)
                 .map(data ->
@@ -57,7 +68,6 @@ public class RSVPKinesisPublisher {
 
         PutRecordsRequest putRecordsRequest =
                 PutRecordsRequest.builder().streamName(streamName).records(requestEntries).build();
-
         PutRecordsResponse putRecordsResponse = kinesisClient.putRecords(putRecordsRequest);
         if (putRecordsResponse == null || putRecordsResponse.failedRecordCount() > 0) {
             LOGGER.error("Failed to publish records...");
