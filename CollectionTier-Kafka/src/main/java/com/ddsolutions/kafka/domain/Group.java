@@ -1,8 +1,9 @@
 package com.ddsolutions.kafka.domain;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Group {
+public class Group implements Serializable {
     private List<GroupTopic> group_topics;
     private String group_city;
     private String group_country;

@@ -1,6 +1,8 @@
 package com.ddsolutions.kafka.domain;
 
-public class GroupTopic {
+import java.io.Serializable;
+
+public class GroupTopic implements Serializable {
     private String urlkey;
     private String topic_name;
 

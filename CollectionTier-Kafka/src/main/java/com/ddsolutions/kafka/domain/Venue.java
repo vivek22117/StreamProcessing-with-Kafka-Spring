@@ -1,6 +1,8 @@
 package com.ddsolutions.kafka.domain;
 
-public class Venue {
+import java.io.Serializable;
+
+public class Venue implements Serializable {
     private String venue_name;
     private double lon;
     private double lat;

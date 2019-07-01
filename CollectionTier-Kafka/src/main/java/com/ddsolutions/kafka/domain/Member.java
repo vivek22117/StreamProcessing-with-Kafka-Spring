@@ -1,6 +1,8 @@
 package com.ddsolutions.kafka.domain;
 
-public class Member {
+import java.io.Serializable;
+
+public class Member implements Serializable {
     private int member_id;
     private String photo;
     private String member_name;

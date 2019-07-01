@@ -1,6 +1,8 @@
 package com.ddsolutions.kafka.domain;
 
-public class Event {
+import java.io.Serializable;
+
+public class Event implements Serializable {
     private String event_name;
     private String event_id;
     private long time;

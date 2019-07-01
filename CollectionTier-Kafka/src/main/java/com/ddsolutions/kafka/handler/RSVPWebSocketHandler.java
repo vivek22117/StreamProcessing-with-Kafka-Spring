@@ -30,7 +30,7 @@ public class RSVPWebSocketHandler extends AbstractWebSocketHandler {
             kafkaPublisher.sendRSVPMessageByProducerRecord(message);
             kinesisPublisher.publish(message);
         } catch (Exception ex) {
-            LOGGER.error("processing failed");
+            LOGGER.error("processing failed", ex);
         }
     }
 }

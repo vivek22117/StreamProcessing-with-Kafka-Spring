@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -57,11 +58,23 @@ public class GzipUtility {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
              ObjectOutputStream output = new ObjectOutputStream(bos)
         ) {
-            output.writeObject(rsvpEventRecord);
+            output.writeObject(rsvpEventRecord.toString());
             LOGGER.info("Object has been serialized");
-            return bos.toByteArray();
+            return Base64.getEncoder().encode(bos.toByteArray());
         } catch (Exception ex) {
             LOGGER.error("Cannot perform output", ex);
+            return null;
+        }
+    }
+
+    public static String deserializeData(String data) {
+        byte[] decode = Base64.getDecoder().decode(data);
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(decode);
+             ObjectInputStream out = new ObjectInputStream(bis)) {
+
+            return (String) out.readObject();
+        } catch (Exception ex) {
+            LOGGER.error("Failed to deserialize data...", ex);
             return null;
         }
     }

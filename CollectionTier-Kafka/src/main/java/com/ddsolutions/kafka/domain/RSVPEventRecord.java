@@ -1,6 +1,8 @@
 package com.ddsolutions.kafka.domain;
 
-public class RSVPEventRecord {
+import java.io.Serializable;
+
+public class RSVPEventRecord implements Serializable {
     private Venue venue;
     private String visibility;
     private String response;
