@@ -65,7 +65,7 @@ public class AppConfiguration {
         props.put(ProducerConfig.RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE));
         props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "5");
 
-        //High Throughput ssetting
+        //High Throughput settings
         props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
         props.put(ProducerConfig.LINGER_MS_CONFIG, "20");
         props.put(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString(32 * 1024));

@@ -51,13 +51,14 @@ public class ApplicationConfiguration {
     }
     @Bean
     public Map<String, Object> consumerConfig() {
-        Map<String, Object> props = new HashMap<>(kafkaProperties.buildProducerProperties());
+        Map<String, Object> props = new HashMap<>(kafkaProperties.buildConsumerProperties());
 
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "50");
 
         //to handle offset commit at code level
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);

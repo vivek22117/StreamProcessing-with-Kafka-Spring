@@ -36,7 +36,7 @@ public class ElasticSearchPublisher {
         //Create unique id for each record using kafka
         //String id = record.topic() + "_" + record.partition() + "_" + record.offset();
         try {
-            //If you have unique id for each record then use it
+            //If you have unique id for each record then use it for idempotent
             String id = extractId(record.value().toString());
 
             IndexRequest request = new IndexRequest(indexName, "tweets", id)   //id is used to make our consumer idempotent

@@ -3,13 +3,7 @@ environment = "dev"
 owner_team = "TeamConcept"
 component_name = "Kafka-Cluster"
 
-
-sync_limit = "5"
-init_limit = "10"
-tick_time = "2000"
-
 kafka_cluster_size = "3"
-zk_cluster_size = "3"
 log_retention = "10"
 is_monitoring_enabled = "true"
 topic_deletion_enabled = "true"
