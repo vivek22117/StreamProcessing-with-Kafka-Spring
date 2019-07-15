@@ -19,4 +19,5 @@ rsvp_asg_wait_for_elb_capacity = "2"
 
 
 lb_name = "rsvp-collection-tier-lb"
-target_group_path = "/acutator"
+target_group_path = "/actuator/health"
+target_group_port = "2020"
