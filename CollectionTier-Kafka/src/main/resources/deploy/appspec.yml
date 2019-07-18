@@ -1,0 +1,31 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ec2-user/rsvp
+
+permissions:
+  - object: /home/ec2-user/rsvp
+    pattern: "*.sh"
+    owner: ec2-user
+    mode: 777
+    type:
+      - file
+
+hooks:
+  ApplicationStop:
+    - location: ApplicationStop.sh
+      timeout: 180
+      runas: ec2-user
+  BeforeInstall:
+    - location: BeforeInstall.sh
+      timeout: 180
+      runas: ec2-user
+  AfterInstall:
+    - location: AfterInstall.sh
+      timeout: 180
+      runas: ec2-user
+  ApplicationStart:
+    - location: ApplicationStart.sh
+      timeout: 180
+      runas: root

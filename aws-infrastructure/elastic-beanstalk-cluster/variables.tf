@@ -23,37 +23,37 @@ variable "aws_account" {}
 
 
 variable "rsvp_asg_max_size" {
-  type = "string"
+  type        = "string"
   description = "ASG max size"
 }
 
 variable "rsvp_asg_min_size" {
-  type = "string"
+  type        = "string"
   description = "ASG min size"
 }
 
 variable "rsvp_asg_desired_capacity" {
-  type = "string"
+  type        = "string"
   description = "ASG desired capacity"
 }
 
 variable "rsvp_asg_health_check_grace_period" {
-  type = "string"
+  type        = "string"
   description = "ASG health check grace period"
 }
 
 variable "health_check_type" {
-  type = "string"
+  type        = "string"
   description = "ASG health check type"
 }
 
 variable "rsvp_asg_wait_for_elb_capacity" {
-  type = "string"
+  type        = "string"
   description = "ASG waith for ELB capacity"
 }
 
 variable "app_instance_name" {
-  type = "string"
+  type        = "string"
   description = "Instance name tag to propagate"
 }
 
@@ -86,47 +86,47 @@ locals {
 
 
 variable "resource_name_prefix" {
-  type = "string"
+  type        = "string"
   description = "Application resource name prefix"
 }
 
 variable "ami_id" {
-  type = "string"
+  type        = "string"
   description = "AMI id to create EC2"
 }
 
 variable "instance_type" {
-  type = "string"
+  type        = "string"
   description = "Instance type to launc EC2"
 }
 
 variable "key_name" {
-  type = "string"
+  type        = "string"
   description = "Key pair to use SSh access"
 }
 
 variable "volume_size" {
-  type = "string"
+  type        = "string"
   description = "Volume size"
 }
 
 variable "max_price" {
-  type = "string"
+  type        = "string"
   description = "Spot price for EC2 instance"
 }
 
 //ALB
 variable "lb_name" {
-  type = "string"
+  type        = "string"
   description = "Name of the load balancer"
 }
 
 variable "target_group_path" {
-  type = "string"
+  type        = "string"
   description = "Health check path"
 }
 
 variable "target_group_port" {
-  type = "string"
+  type        = "string"
   description = "Port of target group instance"
 }

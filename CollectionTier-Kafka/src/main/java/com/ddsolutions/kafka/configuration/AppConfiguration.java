@@ -16,6 +16,7 @@ import org.springframework.kafka.core.ProducerFactory;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
+import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.kinesis.KinesisClient;
 
@@ -42,7 +43,8 @@ public class AppConfiguration {
 
     @Bean
     public KinesisClient createPublisherClient() {
-        return KinesisClient.builder().credentialsProvider(new AwsCredentialsProvider() {
+        return KinesisClient.builder()
+                .credentialsProvider(new AwsCredentialsProvider() {
             @Override
             public AwsCredentials resolveCredentials() {
                 //return InstanceProfileCredentialsProvider.create().resolveCredentials();

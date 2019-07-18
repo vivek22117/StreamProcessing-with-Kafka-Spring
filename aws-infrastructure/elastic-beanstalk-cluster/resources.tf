@@ -1,8 +1,8 @@
 resource "aws_launch_template" "rsvp_launch_template" {
-  name_prefix                 = "${var.resource_name_prefix}${var.environment}"
-  image_id             = var.ami_id
-  instance_type        = var.instance_type
-  key_name             = var.key_name
+  name_prefix            = "${var.resource_name_prefix}${var.environment}"
+  image_id               = var.ami_id
+  instance_type          = var.instance_type
+  key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.instance_sg.id]
 
   instance_initiated_shutdown_behavior = "terminate"
@@ -31,8 +31,8 @@ resource "aws_launch_template" "rsvp_launch_template" {
     device_name = "/dev/xvda"
 
     ebs {
-      volume_size = var.volume_size
-      volume_type = "gp2"
+      volume_size           = var.volume_size
+      volume_type           = "gp2"
       delete_on_termination = true
     }
   }
@@ -43,13 +43,13 @@ resource "aws_launch_template" "rsvp_launch_template" {
 }
 
 resource "aws_lb" "rsvp_lb" {
-  name            = var.lb_name
+  name               = var.lb_name
   load_balancer_type = "network"
-  subnets         = [split(",", data.terraform_remote_state.vpc.outputs.private_subnets)]
-  internal        = "true"
+  subnets            = [split(",", data.terraform_remote_state.vpc.outputs.private_subnets)]
+  internal           = "true"
 
   tags {
-    Name    = "${var.lb_name}-${var.environment}"
+    Name = "${var.lb_name}-${var.environment}"
   }
 }
 
@@ -99,11 +99,11 @@ resource "aws_lb_target_group" "rsvp_lb_target_group" {
 }
 
 resource "aws_autoscaling_group" "rsvp_asg" {
-  name_prefix                = "rsvp-asg-${var.environment}"
+  name_prefix         = "rsvp-asg-${var.environment}"
   vpc_zone_identifier = [split(",", data.terraform_remote_state.vpc.outputs.private_subnets)]
 
   launch_template = {
-    id = aws_launch_template.rsvp_launch_template.id
+    id      = aws_launch_template.rsvp_launch_template.id
     version = aws_launch_template.rsvp_launch_template.latest_version
   }
   target_group_arns = [aws_lb_target_group.rsvp_lb_target_group.arn]
@@ -142,14 +142,14 @@ resource "aws_autoscaling_group" "rsvp_asg" {
 
 resource "aws_autoscaling_attachment" "attach_rsvp_asg_tg" {
   autoscaling_group_name = aws_autoscaling_group.rsvp_asg.id
-  alb_target_group_arn = aws_lb_target_group.rsvp_lb_target_group.arn
+  alb_target_group_arn   = aws_lb_target_group.rsvp_lb_target_group.arn
 }
 
 resource "aws_autoscaling_policy" "instance_scaling_policy" {
   autoscaling_group_name = aws_autoscaling_group.rsvp_asg.name
-  name = "rsvp_asg_scaling_up"
-  scaling_adjustment = 1
-  adjustment_type = "ChangeInCapacity"
-  cooldown = 300
+  name                   = "rsvp_asg_scaling_up"
+  scaling_adjustment     = 1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
 }
 
