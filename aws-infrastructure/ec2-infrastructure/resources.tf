@@ -5,6 +5,8 @@ resource "aws_launch_template" "rsvp_launch_template" {
   key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.instance_sg.id]
 
+  user_data = base64decode(data.template_file.ec2_user_data.rendered)
+
   instance_initiated_shutdown_behavior = "terminate"
 
   iam_instance_profile {

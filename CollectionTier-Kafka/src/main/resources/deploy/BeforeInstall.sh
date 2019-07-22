@@ -2,5 +2,4 @@
 
 echo 'before install script running...'
 
-cd /home/ec2-user/rsvp
-sudo find . -type f -regex '.*' -delete
+rm -rf /home/ec2-user/rsvp/*

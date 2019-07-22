@@ -1,4 +1,4 @@
-package com.ddsolutions.kafka.controller;
+package com.ddsolutions.kafka.configuration;
 
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.actuate.context.ShutdownEndpoint;

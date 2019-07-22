@@ -107,7 +107,7 @@ EOF
 
 #RSVP ec2 instance policy
 resource "aws_iam_policy" "rsvp_collection_policy" {
-  name = "RSVPCollectionPolicy"
+  name = "RSVPCollectionEC2Policy"
   description = "Policy to access AWS Resources"
   path = "/"
 
@@ -116,7 +116,6 @@ resource "aws_iam_policy" "rsvp_collection_policy" {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "Stmt1476360711000",
       "Effect": "Allow",
       "Action": [
           "kinesis:DescribeStream",
@@ -126,7 +125,7 @@ resource "aws_iam_policy" "rsvp_collection_policy" {
           "kinesis:PutRecords"
       ],
       "Resource": [
-        "arn:aws:kinesis:${var.default_region}:${var.aws_account}:stream/rsvp-record-processor-stream"
+        "arn:aws:kinesis:${var.default_region}:${var.aws_account}:stream/${data.terraform_remote_state.rsvp_lambda_kinesis.outputs.stream_name}"
       ]
     },
     {
@@ -135,18 +134,23 @@ resource "aws_iam_policy" "rsvp_collection_policy" {
       ],
 	  "Effect": "Allow",
 	  "Resource": [
-	    "arn:aws:s3:::rsvp_records_${var.environment}"
+	    "arn:aws:s3:::rsvp-records-${var.environment}",
+        "arn:aws:s3:::teamconcept-deploy-*/*",
+        "arn:aws:s3:::teamconcept-deploy-*"
 			]
 	},
 	{
 	  "Action": [
 	    "s3:DeleteObject",
 		"s3:Get*",
+		"s3:List*",
 		"s3:Put*"
 	  ],
 	  "Effect": "Allow",
 	  "Resource": [
-	    "arn:aws:s3:::rsvp_records_${var.environment}/*"
+	    "arn:aws:s3:::rsvp-records-${var.environment}/*",
+        "arn:aws:s3:::teamconcept-deploy-*/*",
+        "arn:aws:s3:::teamconcept-deploy-*"
 	  ]
 	}
   ]

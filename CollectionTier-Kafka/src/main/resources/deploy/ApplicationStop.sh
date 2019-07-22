@@ -2,6 +2,5 @@
 
 echo 'application stop script starting....'
 
-if pgrep java;
-    then sudo pkill java;
-fi
+
+/home/ec2-user/rsvp/deploy_scripts/run.sh stop
