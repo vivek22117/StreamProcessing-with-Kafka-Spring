@@ -14,8 +14,8 @@ resource "aws_codedeploy_deployment_group" "rsvp_codedeploy_group" {
 
   ec2_tag_filter {
     key   = "Name"
-    type  = "KEY_AND_VALUE"
     value = var.app_instance_name
+    type  = "KEY_AND_VALUE"
   }
 
   # trigger a rollback on deployment failure event

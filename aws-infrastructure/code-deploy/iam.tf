@@ -77,11 +77,18 @@ resource "aws_iam_policy" "rsvp_codedeploy_policy" {
       "Resource": [
         "*"
       ]
+    },
+    {
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::teamconcept-deploy-*/*"
     }
   ]
 }
 EOF
-
 }
 
 

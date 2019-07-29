@@ -8,7 +8,7 @@ app_instance_name = "rsvp-collection-tier"
 
 ami_id        = "ami-0cc96feef8c6bbff3"
 instance_type = "t2.small"
-key_name      = "ec2-access"
+key_name      = "rsvp-processor-key"
 volume_size   = "6"
 max_price     = "0.0075"
 

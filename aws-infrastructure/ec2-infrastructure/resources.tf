@@ -1,3 +1,11 @@
+# adding the zip/jar to the defined bucket
+resource "aws_s3_bucket_object" "ec2-app-package" {
+  bucket                 = data.terraform_remote_state.backend.outputs.deploy_bucket_name
+  key                    = var.ec2-webapp-bucket-key
+  source                 = "${path.module}/CollectionTier-Kafka/target/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.zip"
+  server_side_encryption = "AES256"
+}
+
 resource "aws_launch_template" "rsvp_launch_template" {
   name_prefix            = "${var.resource_name_prefix}${var.environment}"
   image_id               = var.ami_id

@@ -19,7 +19,10 @@ variable "component_name" {
   description = "Component name for resources"
 }
 
-variable "aws_account" {}
+variable "ec2-webapp-bucket-key" {
+  type    = string
+  default = "ec2/codedeploy/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.zip"
+}
 
 
 variable "rsvp_asg_max_size" {

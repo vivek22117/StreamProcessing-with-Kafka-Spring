@@ -1,0 +1,33 @@
+{
+  "variables": {
+    "region": "us-east-1",
+    "source_ami": "ami-0cc96feef8c6bbff3"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "profile": "doubledigit",
+      "region": "{{user `region`}}",
+      "instance_type": "t2.medium",
+      "source_ami": "{{user `source_ami`}}",
+      "ssh_username": "ec2-user",
+      "ami_name": "ec2-server-codedeploy-java8",
+      "ami_description": "Amazon Linux Image with Codedeploy and java8",
+      "run_tags": {
+        "Name": "packer-builder"
+      },
+      "tags": {
+        "Tool": "Packer",
+        "Purpose": "EC2-Server",
+        "Author": "vivek"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type" : "shell",
+      "script" : "./install-codedeploy.sh",
+      "execute_command" : "sudo -E -S sh '{{ .Path }}'"
+    }
+  ]
+}
