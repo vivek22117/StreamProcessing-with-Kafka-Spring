@@ -47,7 +47,7 @@ status)
 stop)
         printf "%-50s" "Stopping $NAME..." >> ${LOG_FOLDER}/status.log
             PID=`cat ${PID_FILE}`
-        if [ -f ${PID_FILE} ]; then
+        if [[ -f ${PID_FILE} ]]; then
             kill ${PID}
             printf "%s\n" "Ok"
             rm -f ${PID_FILE}

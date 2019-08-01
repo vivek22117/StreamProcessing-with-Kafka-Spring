@@ -52,10 +52,10 @@ resource "null_resource" "zk_tags" {
   count = length(var.zk_cluster_size)
 
   triggers = {
-    ownner      = "vivek"
+    owner      = "vivek"
     team        = var.owner_team
     environment = var.environment
-    Name        = "Kafka-${count.index}"
+    Name        = "zk-${count.index}"
   }
 }
 

@@ -42,7 +42,7 @@ data "template_file" "test" {
     kafka_key_pair        = var.kafka_key_pair
     ami_id                = var.ami_id
     ec2_instance_type     = var.ec2_instance_type
-    name                  = "Kafka-${count.index}"
+    name                  = "Kafka-cluster"
     owner_team            = var.owner_team
     environment           = var.environment
     component_name        = var.component_name

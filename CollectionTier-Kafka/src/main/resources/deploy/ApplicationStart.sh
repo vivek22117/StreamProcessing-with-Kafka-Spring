@@ -3,4 +3,4 @@
 echo 'application start script starting....'
 
 
-/home/ec2-user/rsvp/deploy_scripts/run.sh start
+/home/ec2-user/rsvp/deploy_scripts/exec.sh start

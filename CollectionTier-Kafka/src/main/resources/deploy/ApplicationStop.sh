@@ -3,4 +3,4 @@
 echo 'application stop script starting....'
 
 
-/home/ec2-user/rsvp/deploy_scripts/run.sh stop
+/home/ec2-user/rsvp/deploy_scripts/exec.sh stop
