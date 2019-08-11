@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash -xe
 
 echo "Install java8"
 sudo yum remove -y java

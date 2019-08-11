@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 echo 'before install script running...'
 
-rm -rf /home/ec2-user/rsvp/*
+rm -rf /opt/rsvp/*

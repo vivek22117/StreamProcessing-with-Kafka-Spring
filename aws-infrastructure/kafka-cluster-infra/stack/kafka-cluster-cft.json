@@ -313,7 +313,7 @@
     },
     "KafkaClusterEC2Two": {
       "Metadata": {
-        "Comment": "Install a simple applicati",
+        "Comment": "Install a simple application",
         "AWS::CloudFormation::Init": {
           "config": {
             "commands": {
@@ -550,6 +550,7 @@
                 "#!/bin/bash -xe\n",
                 "yum update -y aws-cfn-bootstrap\n",
                 "yum update -y\n",
+                "yum install nmap-ncat -y\n",
                 "/opt/aws/bin/cfn-init -s ",
                 {
                   "Ref": "AWS::StackName"

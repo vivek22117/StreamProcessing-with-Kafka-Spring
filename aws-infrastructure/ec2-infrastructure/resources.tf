@@ -2,8 +2,8 @@
 resource "aws_s3_bucket_object" "ec2-app-package" {
   bucket                 = data.terraform_remote_state.backend.outputs.deploy_bucket_name
   key                    = var.ec2-webapp-bucket-key
-  source                 = "${path.module}/CollectionTier-Kafka/target/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.zip"
-  server_side_encryption = "AES256"
+  source                 = "${path.module}/../../CollectionTier-Kafka/target/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.zip"
+  etag   = filemd5("${path.module}/../../CollectionTier-Kafka/target/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.zip")
 }
 
 resource "aws_launch_template" "rsvp_launch_template" {
@@ -11,9 +11,8 @@ resource "aws_launch_template" "rsvp_launch_template" {
   image_id               = var.ami_id
   instance_type          = var.instance_type
   key_name               = var.key_name
-  vpc_security_group_ids = [aws_security_group.instance_sg.id]
 
-  user_data = base64decode(data.template_file.ec2_user_data.rendered)
+  user_data = base64encode(data.template_file.ec2_user_data.rendered)
 
   instance_initiated_shutdown_behavior = "terminate"
 
@@ -30,7 +29,10 @@ resource "aws_launch_template" "rsvp_launch_template" {
   }
 
   network_interfaces {
-    associate_public_ip_address = false
+    device_index = 0
+    associate_public_ip_address = true
+    security_groups = [aws_security_group.instance_sg.id]
+    delete_on_termination = true
   }
 
   placement {
@@ -54,11 +56,11 @@ resource "aws_launch_template" "rsvp_launch_template" {
 
 resource "aws_lb" "rsvp_lb" {
   name               = var.lb_name
-  load_balancer_type = "network"
-  subnets            = [split(",", data.terraform_remote_state.vpc.outputs.private_subnets)]
-  internal           = "true"
+  load_balancer_type = "application"
+  subnets            = data.terraform_remote_state.vpc.outputs.public_subnets
+  internal           = "false"
 
-  tags {
+  tags = {
     Name = "${var.lb_name}-${var.environment}"
   }
 }
@@ -69,15 +71,17 @@ resource "aws_lb_listener" "rsvp_lb_listener" {
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_lb_target_group.rsvp_lb_target_group.arn
     type             = "forward"
+    target_group_arn = aws_lb_target_group.rsvp_lb_target_group.arn
   }
 }
 
 resource "aws_alb_listener_rule" "listener_rule" {
   depends_on   = ["aws_lb_target_group.rsvp_lb_target_group"]
+
   listener_arn = aws_lb_listener.rsvp_lb_listener.arn
   priority     = "100"
+
   action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.rsvp_lb_target_group.arn
@@ -89,16 +93,19 @@ resource "aws_alb_listener_rule" "listener_rule" {
 }
 
 resource "aws_lb_target_group" "rsvp_lb_target_group" {
-  name     = "${var.resource_name_prefix}-${var.environment}-tg"
+  name     = "${var.resource_name_prefix}${var.environment}-tg"
   port     = var.target_group_port
   protocol = "HTTP"
   vpc_id   = data.terraform_remote_state.vpc.outputs.vpc_id
+  target_type = "instance"
 
-  tags {
-    name = "${var.resource_name_prefix}-tg"
+  tags = {
+    name = "${var.resource_name_prefix}tg"
   }
 
   health_check {
+    enabled = true
+    protocol = "HTTP"
     healthy_threshold   = 3
     unhealthy_threshold = 10
     timeout             = 5
@@ -109,10 +116,12 @@ resource "aws_lb_target_group" "rsvp_lb_target_group" {
 }
 
 resource "aws_autoscaling_group" "rsvp_asg" {
-  name_prefix         = "rsvp-asg-${var.environment}"
-  vpc_zone_identifier = [split(",", data.terraform_remote_state.vpc.outputs.private_subnets)]
+  depends_on = ["aws_s3_bucket_object.ec2-app-package"]
 
-  launch_template = {
+  name_prefix         = "rsvp-asg-${var.environment}"
+  vpc_zone_identifier = data.terraform_remote_state.vpc.outputs.public_subnets
+
+  launch_template {
     id      = aws_launch_template.rsvp_launch_template.id
     version = aws_launch_template.rsvp_launch_template.latest_version
   }
@@ -124,7 +133,6 @@ resource "aws_autoscaling_group" "rsvp_asg" {
   desired_capacity          = var.rsvp_asg_desired_capacity
   health_check_grace_period = var.rsvp_asg_health_check_grace_period
   health_check_type         = var.health_check_type
-  load_balancers            = [aws_lb.rsvp_lb.name]
   wait_for_elb_capacity     = var.rsvp_asg_wait_for_elb_capacity
 
   tag {

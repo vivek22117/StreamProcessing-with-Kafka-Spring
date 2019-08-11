@@ -2,13 +2,12 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ec2-user/rsvp
+    destination: /opt/rsvp
 
 permissions:
-  - object: /home/ec2-user/rsvp/deploy_scripts
+  - object: /opt/rsvp/deploy_scripts
     pattern: "*.sh"
-    owner: ec2-user
-    mode: 755
+    mode: 777
     type:
       - file
 
@@ -16,16 +15,16 @@ hooks:
   ApplicationStop:
     - location: deploy_scripts/ApplicationStop.sh
       timeout: 180
-      runas: ec2-user
+      runas: root
   BeforeInstall:
     - location: deploy_scripts/BeforeInstall.sh
       timeout: 180
-      runas: ec2-user
+      runas: root
   AfterInstall:
     - location: deploy_scripts/AfterInstall.sh
       timeout: 180
-      runas: ec2-user
+      runas: root
   ApplicationStart:
     - location: deploy_scripts/ApplicationStart.sh
       timeout: 180
-      runas: ec2-user
+      runas: root

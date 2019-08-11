@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 echo 'application stop script starting....'
 
 
-/home/ec2-user/rsvp/deploy_scripts/exec.sh stop
+/opt/rsvp/deploy_scripts/exec.sh stop

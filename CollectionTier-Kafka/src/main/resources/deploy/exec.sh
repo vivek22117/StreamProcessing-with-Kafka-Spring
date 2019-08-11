@@ -3,12 +3,13 @@
 source /etc/environment
 
 DAEMON="java"
+Environment="local"
 NAME="rsvp"
-RSVP_LOCATION=/home/ec2-user/${NAME}
+RSVP_LOCATION=/opt/${NAME}
 MAIN_CLASS=com.ddsolutions.kafka.RSVPCollectionApplication
 LOG_FOLDER=${RSVP_LOCATION}/logs
 PID_FILE=${LOG_FOLDER}/${NAME}.pid
-DAEMONOPTS="-jar --spring.profiles.active=${Environment} /home/ec2-user/${NAME}/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.jar"
+DAEMONOPTS="-jar /opt/${NAME}/lib/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.jar"
 
 
 JAVAOPTS=""
@@ -16,6 +17,8 @@ if [[ "${Environment}" == "devl" ]]; then
   JAVAOPTS="-Xms512m -Xmx1024m"
 elif [[ "${Environment}" == "prod" ]]; then
   JAVAOPTS="-Xms1024m -Xmx2048m"
+else
+  JAVAOPTS="-Xms512m -Xmx1024m"
 fi
 
 
@@ -37,11 +40,11 @@ start)
 ;;
 status)
         printf "%-50s" "Checking $NAME..." ${LOG_FOLDER}/status.log
-        if ! /usr/sbin/lsof -i:5000
+        if ! /usr/sbin/lsof -i:2020
         then
-            echo "`date` - 5000 is free" >> ${LOG_FOLDER}status.log
+            echo "`date` - 2020 is free" >> ${LOG_FOLDER}status.log
         else
-            echo "`date` - 5000 is occupied" >> ${LOG_FOLDER}status.log
+            echo "`date` - 2020 is occupied" >> ${LOG_FOLDER}status.log
         fi
 ;;
 stop)

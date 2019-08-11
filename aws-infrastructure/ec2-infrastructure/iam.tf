@@ -79,7 +79,7 @@ resource "aws_iam_role_policy_attachment" "ec2_policy_role_attach" {
 }
 
 resource "aws_iam_instance_profile" "rsvp_collection_profile" {
-  name = "RSVPCollectionProfile"
+  name = "RSVPCollectionTierProfile"
   role = aws_iam_role.rsvp_collection_role.name
 }
 
