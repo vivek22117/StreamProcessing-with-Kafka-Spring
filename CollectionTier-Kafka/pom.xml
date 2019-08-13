@@ -222,11 +222,6 @@
                             <Implementation-Version>${project.version}</Implementation-Version>
                             <Build-Date>${maven.build.timestamp}</Build-Date>
                         </manifestEntries>
-                        <manifest>
-                            <mainClass>com.ddsolutions.kafka.RSVPCollectionApplication</mainClass>
-                            <classpathPrefix>../lib</classpathPrefix>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
                     </archive>
                     <excludes>
                         <exclude>*.properties</exclude>

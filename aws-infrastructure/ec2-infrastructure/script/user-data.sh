@@ -13,3 +13,10 @@ sudo /tmp/install-codedeploy-agent auto
 rm /tmp/install-codedeploy-agent
 
 sudo service codedeploy-agent start
+
+echo "export Environment=${environment}" >> /etc/environment
+echo "export LOG_DIR=/opt/dsr/logs/" >> /etc/environment
+
+aws deploy create-deployment --application-name ${rsvp_app_name} \
+	--s3-location bucket="${rsvp_deploy_bucket}",key="${rsvp_app_key}",bundleType=zip \
+	--deployment-group-name ${rsvp_group_name}

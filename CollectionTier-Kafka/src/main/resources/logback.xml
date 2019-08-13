@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true">
-    <property name="IS_ENVIRONMENT_DEVL_QUAL_CERT_OR_PROD" value="true"/>
+    <property name="IS_ENVIRONMENT_DEVL_OR_PROD" value="true"/>
 
     <property name="LOG_LEVEL" value="DEBUG"/>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -9,26 +9,26 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
         </encoder>
     </appender>
-    <if condition='"${environment}".equalsIgnoreCase("Prod")'>
+    <if condition='"${Environment}".equalsIgnoreCase("Prod")'>
         <then>
             <property name="LOG_LEVEL" value="DEBUG"/>
         </then>
     </if>
-    <if condition='"${environment}".equalsIgnoreCase("Local")'>
+    <if condition='"${Environment}".equalsIgnoreCase("Local")'>
         <then>
-            <property name="IS_ENVIRONMENT_DEVL_QUAL_CERT_OR_PROD" value="false"/>
+            <property name="IS_ENVIRONMENT_DEVL_OR_PROD" value="false"/>
         </then>
     </if>
 
-    <if condition='"${environment}".equalsIgnoreCase("Test")'>
+    <if condition='"${Environment}".equalsIgnoreCase("Test")'>
         <then>
-            <property name="IS_ENVIRONMENT_DEVL_QUAL_CERT_OR_PROD" value="false"/>
+            <property name="IS_ENVIRONMENT_DEVL_OR_PROD" value="false"/>
         </then>
     </if>
 
-    <if condition='"${environment}".equalsIgnoreCase("Environment_IS_UNDEFINED")'>
+    <if condition='"${Environment}".equalsIgnoreCase("Environment_IS_UNDEFINED")'>
         <then>
-            <property name="IS_ENVIRONMENT_DEVL_QUAL_CERT_OR_PROD" value="false"/>
+            <property name="IS_ENVIRONMENT_DEVL_OR_PROD" value="false"/>
         </then>
     </if>
 

@@ -10,23 +10,27 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.InstanceProfileCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
-import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.kinesis.KinesisClient;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.ddsolutions.kafka.utility.PropertyLoaderUtility.getInstance;
+
 @Configuration
 public class AppConfiguration {
 
     private final KafkaProperties kafkaProperties;
+    private static AwsCredentialsProvider awsCredentialsProvider;
     private ApplicationContext applicationContext;
 
     @Value("${bootstrap.servers}")
@@ -42,18 +46,15 @@ public class AppConfiguration {
     }
 
     @Bean
+    @Profile(value = {"dev", "prod"})
     public KinesisClient createPublisherClient() {
         return KinesisClient.builder()
-                .credentialsProvider(new AwsCredentialsProvider() {
-            @Override
-            public AwsCredentials resolveCredentials() {
-                //return InstanceProfileCredentialsProvider.create().resolveCredentials();
-                return ProfileCredentialsProvider.create("doubledigit").resolveCredentials();
-            }
-        }).region(Region.US_EAST_1).build();
+                .credentialsProvider(getAwsCredentials())
+                .region(Region.US_EAST_1).build();
     }
 
     @Bean
+    @Profile(value = {"dev", "prod"})
     public Map<String, Object> producerConfig() {
         Map<String, Object> props = new HashMap<>(kafkaProperties.buildProducerProperties());
 
@@ -93,5 +94,22 @@ public class AppConfiguration {
     @Bean
     public KafkaProducer<String, Object> getKafkaProducer() {
         return new KafkaProducer<String, Object>(producerConfig());
+    }
+
+    private static AwsCredentialsProvider getAwsCredentials() {
+        if (awsCredentialsProvider == null) {
+            boolean isRunningInEC2 = Boolean.parseBoolean(getInstance().getProperty("isRunningInEC2"));
+            boolean isRunningInLocal = Boolean.parseBoolean(getInstance().getProperty("isRunningInLocal"));
+            if (isRunningInEC2) {
+                awsCredentialsProvider = InstanceProfileCredentialsProvider.builder().build();
+                return awsCredentialsProvider;
+            } else if (isRunningInLocal) {
+                awsCredentialsProvider = ProfileCredentialsProvider.builder().profileName("doubledigit").build();
+                return awsCredentialsProvider;
+            } else {
+                awsCredentialsProvider = DefaultCredentialsProvider.builder().build();
+            }
+        }
+        return awsCredentialsProvider;
     }
 }
