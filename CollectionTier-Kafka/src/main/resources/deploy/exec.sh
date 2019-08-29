@@ -3,13 +3,13 @@
 source /etc/environment
 
 DAEMON="java"
-Environment="local"
 NAME="rsvp"
 RSVP_LOCATION=/opt/${NAME}
 MAIN_CLASS=com.ddsolutions.kafka.RSVPCollectionApplication
 LOG_FOLDER=${RSVP_LOCATION}/logs
 PID_FILE=${LOG_FOLDER}/${NAME}.pid
-DAEMONOPTS="-jar /opt/${NAME}/lib/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.jar"
+CONFIG_FOLDER="-Dspring.config.location=${RSVP_LOCATION}/config/application-dev.properties,${RSVP_LOCATION}/config/application-prod.properties"
+DAEMONOPTS="-jar -Dspring.profiles.active=${Environment} ${CONFIG_FOLDER} /opt/${NAME}/lib/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.jar"
 
 
 JAVAOPTS=""
@@ -20,7 +20,6 @@ elif [[ "${Environment}" == "prod" ]]; then
 else
   JAVAOPTS="-Xms512m -Xmx1024m"
 fi
-
 
 
 case "$1" in

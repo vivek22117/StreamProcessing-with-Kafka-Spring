@@ -55,6 +55,26 @@ variable "rsvp_asg_wait_for_elb_capacity" {
   description = "ASG waith for ELB capacity"
 }
 
+variable "default_cooldown" {
+  type = number
+  description = "Cooldown value of ASG"
+}
+
+variable "termination_policies" {
+  description = "A list of policies to decide how the instances in the auto scale group should be terminated"
+  type        = list(string)
+}
+
+variable "suspended_processes" {
+  description = "The allowed values are Launch, Terminate, HealthCheck, ReplaceUnhealthy, AZRebalance, AlarmNotification, ScheduledActions, AddToLoadBalancer"
+  type        = list(string)
+}
+
+variable "wait_for_capacity_timeout" {
+  description = "A maximum duration that Terraform should wait for ASG instances to be healthy before timing out"
+  type        = string
+}
+
 variable "app_instance_name" {
   type        = "string"
   description = "Instance name tag to propagate"

@@ -249,6 +249,7 @@
                 "#!/bin/bash -xe\n",
                 "yum update -y aws-cfn-bootstrap\n",
                 "yum update -y\n",
+                "yum install nmap-ncat -y\n",
                 "/opt/aws/bin/cfn-init -v -s ",
                 {
                   "Ref": "AWS::StackName"
@@ -852,6 +853,7 @@
                 "#!/bin/bash -xe\n",
                 "yum update -y aws-cfn-bootstrap\n",
                 "yum update -y\n",
+                "yum install nmap-ncat -y\n",
                 "/opt/aws/bin/cfn-init -s ",
                 {
                   "Ref": "AWS::StackName"

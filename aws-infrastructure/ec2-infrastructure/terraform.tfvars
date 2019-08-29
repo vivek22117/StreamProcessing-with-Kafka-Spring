@@ -18,6 +18,10 @@ rsvp_asg_desired_capacity          = "1"
 health_check_type                  = "EC2"
 rsvp_asg_health_check_grace_period = "240"
 rsvp_asg_wait_for_elb_capacity     = "1"
+default_cooldown = 300
+termination_policies     = ["Default", "OldestInstance"]
+suspended_processes =  []
+wait_for_capacity_timeout = "7m"
 
 
 lb_name           = "rsvp-collection-tier-lb"

@@ -39,7 +39,8 @@ public class RSVPKafkaPublisher {
     }
 
     public void sendRSVPMessages(WebSocketMessage<?> rsvpMessage){
-        ListenableFuture<SendResult<String, Object>> result = kafkaTemplate.send(topic.name(), rsvpMessage);
+        ListenableFuture<SendResult<String, Object>> result =
+                kafkaTemplate.send(topic.name(), rsvpMessage);
 
     }
 

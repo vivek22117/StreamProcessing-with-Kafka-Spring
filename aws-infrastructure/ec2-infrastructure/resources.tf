@@ -127,13 +127,16 @@ resource "aws_autoscaling_group" "rsvp_asg" {
   }
   target_group_arns = [aws_lb_target_group.rsvp_lb_target_group.arn]
 
-  termination_policies      = ["OldestInstance"]
+  termination_policies      = var.termination_policies
   max_size                  = var.rsvp_asg_max_size
   min_size                  = var.rsvp_asg_min_size
   desired_capacity          = var.rsvp_asg_desired_capacity
   health_check_grace_period = var.rsvp_asg_health_check_grace_period
   health_check_type         = var.health_check_type
   wait_for_elb_capacity     = var.rsvp_asg_wait_for_elb_capacity
+  wait_for_capacity_timeout = var.wait_for_capacity_timeout
+
+  default_cooldown = var.default_cooldown
 
   tag {
     key                 = "Name"
@@ -163,11 +166,19 @@ resource "aws_autoscaling_attachment" "attach_rsvp_asg_tg" {
   alb_target_group_arn   = aws_lb_target_group.rsvp_lb_target_group.arn
 }
 
-resource "aws_autoscaling_policy" "instance_scaling_policy" {
+resource "aws_autoscaling_policy" "instance_scaling_up_policy" {
   autoscaling_group_name = aws_autoscaling_group.rsvp_asg.name
   name                   = "rsvp_asg_scaling_up"
   scaling_adjustment     = 1
   adjustment_type        = "ChangeInCapacity"
-  cooldown               = 300
+  cooldown               = 600
+}
+
+resource "aws_autoscaling_policy" "instance_scaling_down_policy" {
+  autoscaling_group_name = aws_autoscaling_group.rsvp_asg.name
+  name                   = "rsvp_asg_scaling_down"
+  scaling_adjustment     = -1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 600
 }
 
