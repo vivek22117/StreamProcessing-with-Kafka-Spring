@@ -39,6 +39,12 @@ public class AppConfiguration {
     @Value("${kafka.rsvp.topic}")
     private String topicName;
 
+    @Value("${isRunningInEC2}")
+    private boolean isRunningInEC2;
+
+    @Value("${isRunningInLocal}")
+    private boolean isRunningInLocal;
+
     @Autowired
     public AppConfiguration(KafkaProperties kafkaProperties, ApplicationContext applicationContext) {
         this.kafkaProperties = kafkaProperties;
@@ -96,16 +102,12 @@ public class AppConfiguration {
         return new KafkaProducer<String, Object>(producerConfig());
     }
 
-    private static AwsCredentialsProvider getAwsCredentials() {
+    private AwsCredentialsProvider getAwsCredentials() {
         if (awsCredentialsProvider == null) {
-            boolean isRunningInEC2 = Boolean.parseBoolean(getInstance().getProperty("isRunningInEC2"));
-            boolean isRunningInLocal = Boolean.parseBoolean(getInstance().getProperty("isRunningInLocal"));
             if (isRunningInEC2) {
                 awsCredentialsProvider = InstanceProfileCredentialsProvider.builder().build();
-                return awsCredentialsProvider;
             } else if (isRunningInLocal) {
                 awsCredentialsProvider = ProfileCredentialsProvider.builder().profileName("doubledigit").build();
-                return awsCredentialsProvider;
             } else {
                 awsCredentialsProvider = DefaultCredentialsProvider.builder().build();
             }
