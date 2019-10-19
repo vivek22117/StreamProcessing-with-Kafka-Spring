@@ -22,7 +22,6 @@ public class RSVPCollectionApplication {
 
     @Bean
     public ApplicationRunner init(RSVPWebSocketHandler handler){
-
         return new ApplicationRunner() {
             @Override
             public void run(ApplicationArguments args) throws Exception {

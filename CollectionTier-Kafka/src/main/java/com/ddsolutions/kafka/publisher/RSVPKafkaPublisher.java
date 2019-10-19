@@ -62,7 +62,7 @@ public class RSVPKafkaPublisher {
 
             @Override
             public void onFailure(Throwable throwable) {
-                LOGGER.error("Error while publishing rsvp: ", throwable);
+                LOGGER.error("Error while publishing rsvp to kafka: ", throwable);
             }
         });
 

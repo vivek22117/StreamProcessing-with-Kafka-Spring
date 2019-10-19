@@ -41,8 +41,6 @@ public class RSVPKinesisPublisher {
     }
 
     public void publish(WebSocketMessage<?> message) {
-       /* RSVPEventRecord rsvpEventRecord =
-                jsonUtility.convertFromJson(message.getPayload().toString(), RSVPEventRecord.class);*/
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         RSVPEventRecord rsvpEventRecord = gson.fromJson(message.getPayload().toString(), RSVPEventRecord.class);
         List<RSVPEventRecord> rsvpEventRecords = Collections.singletonList(rsvpEventRecord);
