@@ -1,4 +1,4 @@
-//Global Variables
+#####====================Global Variables===================#####
 variable "profile" {
   type        = string
   description = "AWS Profile name for credentials"
@@ -6,7 +6,7 @@ variable "profile" {
 
 variable "environment" {
   type        = string
-  description = "AWS Profile name for credentials"
+  description = "Environment to be configured 'dev', 'qa', 'prod'"
 }
 
 variable "owner_team" {
@@ -19,6 +19,7 @@ variable "component_name" {
   description = "Component name for resources"
 }
 
+#####======================Application Variables=================#####
 variable "ec2-webapp-bucket-key" {
   type    = string
   default = "ec2/codedeploy/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.zip"
@@ -80,33 +81,6 @@ variable "app_instance_name" {
   description = "Instance name tag to propagate"
 }
 
-//Default Variables
-variable "default_region" {
-  type    = string
-  default = "us-east-1"
-}
-
-variable "dyanamoDB_prefix" {
-  type    = string
-  default = "teamconcept-tfstate"
-}
-
-variable "s3_bucket_prefix" {
-  type    = string
-  default = "teamconcept-tfstate"
-}
-
-
-
-//Local variables
-locals {
-  common_tags = {
-    owner       = "Vivek"
-    team        = "TeamConcept"
-    environment = var.environment
-  }
-}
-
 
 variable "resource_name_prefix" {
   type        = "string"
@@ -129,27 +103,82 @@ variable "key_name" {
 }
 
 variable "volume_size" {
-  type        = "string"
+  type        = string
   description = "Volume size"
 }
 
 variable "max_price" {
-  type        = "string"
+  type        = string
   description = "Spot price for EC2 instance"
 }
 
-//ALB
+variable "instance_tenancy" {
+  type = string
+  description = "Type of EC2 instance tenancy 'default' or 'dedicated'"
+}
+
+variable "target_type" {
+  type = string
+  description = "Target group instance type 'ip', 'intance', 'lambda'"
+}
+
+#####=============ALB Variables===================#####
 variable "lb_name" {
-  type        = "string"
+  type        = string
   description = "Name of the load balancer"
 }
 
+variable "lb_type" {
+  type = string
+  description = "Type of load balance to be configure 'application' or 'network'"
+}
+
 variable "target_group_path" {
-  type        = "string"
+  type        = string
   description = "Health check path"
 }
 
 variable "target_group_port" {
-  type        = "string"
+  type        = string
   description = "Port of target group instance"
+}
+
+
+#####=============ASG Standards Tags===============#####
+variable "custom_tags" {
+  description = "Custom tags to set on the Instances in the ASG"
+  type        = map(string)
+  default = {
+    owner       = "Vivek"
+    team        = "DoubleDigit"
+    tool        = "Terraform"
+    monitoring  = "true"
+    Name        = "rsvp-collection-tier"
+  }
+}
+
+#####=============Default Variables=============#####
+variable "default_region" {
+  type    = string
+  description = "AWS region to deploy infra and appication"
+}
+
+variable "dyanamoDB_prefix" {
+  type    = string
+  default = "doubledigit-tfstate"
+}
+
+variable "s3_bucket_prefix" {
+  type    = string
+  default = "doubledigit-tfstate"
+}
+
+
+#####=============Local variables===============#####
+locals {
+  common_tags = {
+    owner       = "Vivek"
+    team        = var.owner_team
+    environment = var.environment
+  }
 }

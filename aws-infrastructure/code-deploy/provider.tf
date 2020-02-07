@@ -2,7 +2,7 @@ provider "aws" {
   region  = var.default_region                         // Interpolation Syntax
   profile = var.profile
 
-  version = "2.17.0"                                    // AWS plugin version
+  version = ">=2.22"                                    // AWS plugin version
 }
 
 
@@ -14,9 +14,9 @@ terraform {
   required_version = ">= 0.12"                             // Terraform version
 
   backend "s3" {
-    profile        = "doubledigit"
-    bucket         = "teamconcept-tfstate-dev-us-east-1"
-    dynamodb_table = "teamconcept-tfstate-dev-us-east-1"
+    profile        = "admin"
+    bucket         = "doubledigit-tfstate-dev-us-east-1"
+    dynamodb_table = "doubledigit-tfstate-dev-us-east-1"
     key            = "state/dev/rsvp-collection/code-deploy/terraform.tfstate"
     region         = "us-east-1"
     encrypt        = "true"

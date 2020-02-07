@@ -1,4 +1,10 @@
-# adding the zip/jar to the defined bucket
+#############################################
+#      AWS Account details helper           #
+#############################################
+data "aws_caller_identity" "current" {}
+
+
+#####============adding the zip/jar to the defined bucket=================#####
 resource "aws_s3_bucket_object" "ec2-app-package" {
   bucket                 = data.terraform_remote_state.backend.outputs.deploy_bucket_name
   key                    = var.ec2-webapp-bucket-key
@@ -6,8 +12,14 @@ resource "aws_s3_bucket_object" "ec2-app-package" {
   etag   = filemd5("${path.module}/../../CollectionTier-Kafka/target/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.zip")
 }
 
+##################################################################
+#      Application launc template helps us to configure EC2      #
+#      instance like, AMI Id, Instance Type, Key-Pair, User-     #
+#      Data, Instance-Profile, EBS etc.                          #
+##################################################################
 resource "aws_launch_template" "rsvp_launch_template" {
   name_prefix            = "${var.resource_name_prefix}${var.environment}"
+
   image_id               = var.ami_id
   instance_type          = var.instance_type
   key_name               = var.key_name
@@ -36,7 +48,7 @@ resource "aws_launch_template" "rsvp_launch_template" {
   }
 
   placement {
-    tenancy = "default"
+    tenancy = var.instance_tenancy
   }
 
   block_device_mappings {
@@ -56,16 +68,18 @@ resource "aws_launch_template" "rsvp_launch_template" {
 
 resource "aws_lb" "rsvp_lb" {
   name               = var.lb_name
-  load_balancer_type = "application"
+
+  load_balancer_type = var.lb_type
   subnets            = data.terraform_remote_state.vpc.outputs.public_subnets
   internal           = "false"
+  security_groups = [aws_security_group.lb_sg.id]
 
   tags = {
     Name = "${var.lb_name}-${var.environment}"
   }
 }
 
-resource "aws_lb_listener" "rsvp_lb_listener" {
+resource "aws_lb_listener" "rsvp_lb_listener_http" {
   load_balancer_arn = aws_lb.rsvp_lb.arn
   port              = "80"
   protocol          = "HTTP"
@@ -77,9 +91,9 @@ resource "aws_lb_listener" "rsvp_lb_listener" {
 }
 
 resource "aws_alb_listener_rule" "listener_rule" {
-  depends_on   = ["aws_lb_target_group.rsvp_lb_target_group"]
+  depends_on   = [aws_lb_target_group.rsvp_lb_target_group]
 
-  listener_arn = aws_lb_listener.rsvp_lb_listener.arn
+  listener_arn = aws_lb_listener.rsvp_lb_listener_http.arn
   priority     = "100"
 
   action {
@@ -94,14 +108,11 @@ resource "aws_alb_listener_rule" "listener_rule" {
 
 resource "aws_lb_target_group" "rsvp_lb_target_group" {
   name     = "${var.resource_name_prefix}${var.environment}-tg"
-  port     = var.target_group_port
-  protocol = "HTTP"
-  vpc_id   = data.terraform_remote_state.vpc.outputs.vpc_id
-  target_type = "instance"
 
-  tags = {
-    name = "${var.resource_name_prefix}tg"
-  }
+  vpc_id   = data.terraform_remote_state.vpc.outputs.vpc_id
+  port     = var.target_group_port
+  target_type = var.target_type
+  protocol = "HTTP"
 
   health_check {
     enabled = true
@@ -113,10 +124,12 @@ resource "aws_lb_target_group" "rsvp_lb_target_group" {
     path                = var.target_group_path
     port                = var.target_group_port
   }
+
+  tags = merge(local.common_tags, map("Name", "${var.resource_name_prefix}tg"))
 }
 
 resource "aws_autoscaling_group" "rsvp_asg" {
-  depends_on = ["aws_s3_bucket_object.ec2-app-package"]
+  depends_on = [aws_s3_bucket_object.ec2-app-package]
 
   name_prefix         = "rsvp-asg-${var.environment}"
   vpc_zone_identifier = data.terraform_remote_state.vpc.outputs.public_subnets
@@ -125,6 +138,7 @@ resource "aws_autoscaling_group" "rsvp_asg" {
     id      = aws_launch_template.rsvp_launch_template.id
     version = aws_launch_template.rsvp_launch_template.latest_version
   }
+
   target_group_arns = [aws_lb_target_group.rsvp_lb_target_group.arn]
 
   termination_policies      = var.termination_policies
@@ -138,26 +152,18 @@ resource "aws_autoscaling_group" "rsvp_asg" {
 
   default_cooldown = var.default_cooldown
 
-  tag {
-    key                 = "Name"
-    value               = var.app_instance_name
-    propagate_at_launch = true
-  }
-
-  tag {
-    key                 = "owner"
-    value               = local.common_tags.owner
-    propagate_at_launch = true
-  }
-
-  tag {
-    key                 = "team"
-    value               = local.common_tags.team
-    propagate_at_launch = true
-  }
 
   lifecycle {
     create_before_destroy = true
+  }
+
+  dynamic "tag" {
+    for_each = var.custom_tags
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
   }
 }
 
@@ -168,6 +174,7 @@ resource "aws_autoscaling_attachment" "attach_rsvp_asg_tg" {
 
 resource "aws_autoscaling_policy" "instance_scaling_up_policy" {
   autoscaling_group_name = aws_autoscaling_group.rsvp_asg.name
+
   name                   = "rsvp_asg_scaling_up"
   scaling_adjustment     = 1
   adjustment_type        = "ChangeInCapacity"
@@ -176,6 +183,7 @@ resource "aws_autoscaling_policy" "instance_scaling_up_policy" {
 
 resource "aws_autoscaling_policy" "instance_scaling_down_policy" {
   autoscaling_group_name = aws_autoscaling_group.rsvp_asg.name
+
   name                   = "rsvp_asg_scaling_down"
   scaling_adjustment     = -1
   adjustment_type        = "ChangeInCapacity"

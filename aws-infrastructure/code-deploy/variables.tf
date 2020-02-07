@@ -1,4 +1,4 @@
-//Global Variables
+#####==============Global Variables=====================#####
 variable "profile" {
   type        = string
   description = "AWS Profile name for credentials"
@@ -6,7 +6,7 @@ variable "profile" {
 
 variable "environment" {
   type        = string
-  description = "AWS Profile name for credentials"
+  description = "Environment to be configured 'dev', 'qa', 'prod'"
 }
 
 variable "owner_team" {
@@ -20,7 +20,7 @@ variable "component_name" {
 }
 
 
-//Default Variables
+#####===================Default Variables==============#####
 variable "default_region" {
   type    = string
   default = "us-east-1"
@@ -28,16 +28,16 @@ variable "default_region" {
 
 variable "dyanamoDB_prefix" {
   type    = string
-  default = "teamconcept-tfstate"
+  default = "doubledigit-tfstate"
 }
 
 variable "s3_bucket_prefix" {
   type    = string
-  default = "teamconcept-tfstate"
+  default = "doubledigit-tfstate"
 }
 
 variable "app_instance_name" {
-  type        = "string"
+  type        = string
   description = "Instance name tag to propagate"
 }
 
@@ -45,7 +45,7 @@ variable "app_instance_name" {
 locals {
   common_tags = {
     owner       = "Vivek"
-    team        = "TeamConcept"
+    team        = var.owner_team
     environment = var.environment
   }
 }

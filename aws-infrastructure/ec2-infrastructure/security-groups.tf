@@ -1,13 +1,16 @@
-// Security Group for Jenkins Master
+#############################################
+#      Security Group for RSVP EC2          #
+#############################################
 resource "aws_security_group" "instance_sg" {
   name        = "rsvp-sg"
+
   description = "Allow traffic from port elb and enable SSH"
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
 
   lifecycle {
     create_before_destroy = true
   }
-  tags = local.common_tags
+  tags = merge(local.common_tags, map("Name", "rsvp-ct-sg"))
 }
 
 resource "aws_security_group_rule" "allow_traffic_from_lb" {
@@ -38,13 +41,15 @@ resource "aws_security_group_rule" "master_outbound_rule" {
 }
 
 
-// Security Group for Elastic Load Balancer
+##########################################################
+#      Security Group for Elastic Load Balancer          #
+##########################################################
 resource "aws_security_group" "lb_sg" {
   name        = "rsvp-lb-sg"
   description = "load balancer security group"
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
 
-  tags = local.common_tags
+  tags = merge(local.common_tags, map("Name", "rsvp-ct-lb-sg"))
 }
 
 resource "aws_security_group_rule" "allow_http" {

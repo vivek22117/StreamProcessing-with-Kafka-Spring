@@ -8,11 +8,10 @@ resource "aws_iam_role" "rsvp_collection_role" {
     "Statement": [
         {
             "Action": "sts:AssumeRole",
+            "Effect": "Allow",
             "Principal": {
                "Service": "ec2.amazonaws.com"
-            },
-            "Effect": "Allow",
-            "Sid": ""
+            }
         }
     ]
 }
