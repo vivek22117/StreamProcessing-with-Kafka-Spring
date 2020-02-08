@@ -19,4 +19,4 @@ echo "export LOG_DIR=/opt/dsr/logs/" >> /etc/environment
 
 sudo aws deploy create-deployment --application-name ${rsvp_app_name} \
 	--s3-location bucket="${rsvp_deploy_bucket}",key="${rsvp_app_key}",bundleType=zip \
-	--deployment-group-name ${rsvp_group_name}
+	--deployment-group-name ${rsvp_group_name} --region ${aws_region}

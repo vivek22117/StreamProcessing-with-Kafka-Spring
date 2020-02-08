@@ -20,9 +20,9 @@ EOF
 
 #RSVP ec2 instance policy
 resource "aws_iam_policy" "rsvp_collection_policy" {
-  name = "RSVPCollectionEC2Policy"
+  name        = "RSVPCollectionEC2Policy"
   description = "Policy to access AWS Resources"
-  path = "/"
+  path        = "/"
 
   policy = <<EOF
 {
@@ -62,10 +62,25 @@ resource "aws_iam_policy" "rsvp_collection_policy" {
 	  "Effect": "Allow",
 	  "Resource": [
 	    "arn:aws:s3:::rsvp-records-${var.environment}/*",
-        "arn:aws:s3:::teamconcept-deploy-*/*",
-        "arn:aws:s3:::teamconcept-deploy-*"
+        "arn:aws:s3:::doubledigit-aritifactory-*/*",
+        "arn:aws:s3:::doubledigit-aritifactory-*"
 	  ]
-	}
+	},
+    {
+      "Action": [
+        "codedeploy:Batch*",
+        "codedeploy:CreateDeployment",
+        "codedeploy:Get*",
+        "codedeploy:List*",
+        "codedeploy:RegisterApplicationRevision"
+            ],
+       "Effect": "Allow",
+       "Resource": [
+          "arn:aws:codedeploy:${var.default_region}:${data.aws_caller_identity.current.account_id}:deploymentgroup:RSVPCollectionTier_APP/RSVPCollectionTier",
+          "arn:aws:codedeploy:${var.default_region}:${data.aws_caller_identity.current.account_id}:deploymentconfig:CodeDeployDefault.OneAtATime",
+          "arn:aws:codedeploy:${var.default_region}:${data.aws_caller_identity.current.account_id}:application:RSVPCollectionTier_APP"
+        ]
+    }
   ]
 }
 EOF

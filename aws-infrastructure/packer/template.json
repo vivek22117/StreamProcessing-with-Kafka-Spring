@@ -6,7 +6,7 @@
   "builders": [
     {
       "type": "amazon-ebs",
-      "profile": "doubledigit",
+      "profile": "admin",
       "region": "{{user `region`}}",
       "instance_type": "t2.medium",
       "source_ami": "{{user `source_ami`}}",
@@ -18,7 +18,7 @@
       },
       "tags": {
         "Tool": "Packer",
-        "Purpose": "EC2-Server",
+        "Purpose": "app-server",
         "Author": "vivek"
       }
     }

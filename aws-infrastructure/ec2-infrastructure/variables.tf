@@ -21,43 +21,43 @@ variable "component_name" {
 
 #####======================Application Variables=================#####
 variable "ec2-webapp-bucket-key" {
-  type    = string
-  default = "ec2/codedeploy/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.zip"
+  type        = string
+  description = "Location of S3 key which holds the deployable zip file"
 }
 
 
 variable "rsvp_asg_max_size" {
-  type        = "string"
+  type        = string
   description = "ASG max size"
 }
 
 variable "rsvp_asg_min_size" {
-  type        = "string"
+  type        = string
   description = "ASG min size"
 }
 
 variable "rsvp_asg_desired_capacity" {
-  type        = "string"
+  type        = string
   description = "ASG desired capacity"
 }
 
 variable "rsvp_asg_health_check_grace_period" {
-  type        = "string"
+  type        = string
   description = "ASG health check grace period"
 }
 
 variable "health_check_type" {
-  type        = "string"
+  type        = string
   description = "ASG health check type"
 }
 
 variable "rsvp_asg_wait_for_elb_capacity" {
-  type        = "string"
+  type        = string
   description = "ASG waith for ELB capacity"
 }
 
 variable "default_cooldown" {
-  type = number
+  type        = number
   description = "Cooldown value of ASG"
 }
 
@@ -77,28 +77,28 @@ variable "wait_for_capacity_timeout" {
 }
 
 variable "app_instance_name" {
-  type        = "string"
+  type        = string
   description = "Instance name tag to propagate"
 }
 
 
 variable "resource_name_prefix" {
-  type        = "string"
+  type        = string
   description = "Application resource name prefix"
 }
 
 variable "ami_id" {
-  type        = "string"
+  type        = string
   description = "AMI id to create EC2"
 }
 
 variable "instance_type" {
-  type        = "string"
+  type        = string
   description = "Instance type to launc EC2"
 }
 
 variable "key_name" {
-  type        = "string"
+  type        = string
   description = "Key pair to use SSh access"
 }
 
@@ -113,12 +113,12 @@ variable "max_price" {
 }
 
 variable "instance_tenancy" {
-  type = string
+  type        = string
   description = "Type of EC2 instance tenancy 'default' or 'dedicated'"
 }
 
 variable "target_type" {
-  type = string
+  type        = string
   description = "Target group instance type 'ip', 'intance', 'lambda'"
 }
 
@@ -129,7 +129,7 @@ variable "lb_name" {
 }
 
 variable "lb_type" {
-  type = string
+  type        = string
   description = "Type of load balance to be configure 'application' or 'network'"
 }
 
@@ -149,17 +149,17 @@ variable "custom_tags" {
   description = "Custom tags to set on the Instances in the ASG"
   type        = map(string)
   default = {
-    owner       = "Vivek"
-    team        = "DoubleDigit"
-    tool        = "Terraform"
-    monitoring  = "true"
-    Name        = "rsvp-collection-tier"
+    owner      = "Vivek"
+    team       = "DoubleDigit"
+    tool       = "Terraform"
+    monitoring = "true"
+    Name       = "rsvp-collection-tier"
   }
 }
 
 #####=============Default Variables=============#####
 variable "default_region" {
-  type    = string
+  type        = string
   description = "AWS region to deploy infra and appication"
 }
 

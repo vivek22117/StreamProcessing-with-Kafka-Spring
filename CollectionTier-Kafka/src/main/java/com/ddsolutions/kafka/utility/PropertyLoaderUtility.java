@@ -6,9 +6,9 @@ import java.util.Properties;
 
 public class PropertyLoaderUtility {
 
-    private static final String ENVIRONMENT = "environment";
+    private static final String ENVIRONMENT = "Environment";
     private static final String SUFFIX = ".properties";
-    private static final String PREFFIX = "/application";
+    private static final String PREFIX = "/application";
 
     private static PropertyLoaderUtility propertyLoaderUtility = new PropertyLoaderUtility();
 
@@ -25,7 +25,7 @@ public class PropertyLoaderUtility {
             String environment = System.getenv(ENVIRONMENT);
             if (environment != null) {
                 environment = "-" + environment;
-                propFileName = PREFFIX + environment + SUFFIX;
+                propFileName = PREFIX + environment + SUFFIX;
             }
             Properties prop = new Properties();
             ClassLoader loader = Thread.currentThread().getContextClassLoader();

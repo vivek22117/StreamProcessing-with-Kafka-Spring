@@ -27,10 +27,10 @@ public class RSVPWebSocketHandler extends AbstractWebSocketHandler {
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         try {
-            kafkaPublisher.sendRSVPMessageByProducerRecord(message);
+//            kafkaPublisher.sendRSVPMessageByProducerRecord(message);
             kinesisPublisher.publish(message);
         } catch (Exception ex) {
-            LOGGER.error("Processing failed while publishing message, {} to Kafka or Kinesis", message.getPayload(),  ex);
+            LOGGER.error("Processing failed while publishing message, {} to Kafka or Kinesis", message.getPayload(), ex);
         }
     }
 }

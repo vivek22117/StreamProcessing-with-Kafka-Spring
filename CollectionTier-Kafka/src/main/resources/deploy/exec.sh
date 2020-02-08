@@ -13,7 +13,7 @@ DAEMONOPTS="-jar -Dspring.profiles.active=${Environment} ${CONFIG_FOLDER} /opt/$
 
 
 JAVAOPTS=""
-if [[ "${Environment}" == "devl" ]]; then
+if [[ "${Environment}" == "dev" ]]; then
   JAVAOPTS="-Xms512m -Xmx1024m"
 elif [[ "${Environment}" == "prod" ]]; then
   JAVAOPTS="-Xms1024m -Xmx2048m"

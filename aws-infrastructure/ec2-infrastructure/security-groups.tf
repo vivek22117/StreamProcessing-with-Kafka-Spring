@@ -2,7 +2,7 @@
 #      Security Group for RSVP EC2          #
 #############################################
 resource "aws_security_group" "instance_sg" {
-  name        = "rsvp-sg"
+  name = "rsvp-sg"
 
   description = "Allow traffic from port elb and enable SSH"
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id

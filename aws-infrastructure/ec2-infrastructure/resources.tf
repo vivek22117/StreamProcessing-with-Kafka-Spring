@@ -6,9 +6,9 @@ data "aws_caller_identity" "current" {}
 
 #####============adding the zip/jar to the defined bucket=================#####
 resource "aws_s3_bucket_object" "ec2-app-package" {
-  bucket                 = data.terraform_remote_state.backend.outputs.deploy_bucket_name
-  key                    = var.ec2-webapp-bucket-key
-  source                 = "${path.module}/../../CollectionTier-Kafka/target/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.zip"
+  bucket = data.terraform_remote_state.backend.outputs.aritfactory_bucket_name
+  key    = var.ec2-webapp-bucket-key
+  source = "${path.module}/../../CollectionTier-Kafka/target/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.zip"
   etag   = filemd5("${path.module}/../../CollectionTier-Kafka/target/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.zip")
 }
 
@@ -18,11 +18,11 @@ resource "aws_s3_bucket_object" "ec2-app-package" {
 #      Data, Instance-Profile, EBS etc.                          #
 ##################################################################
 resource "aws_launch_template" "rsvp_launch_template" {
-  name_prefix            = "${var.resource_name_prefix}${var.environment}"
+  name_prefix = "${var.resource_name_prefix}${var.environment}"
 
-  image_id               = var.ami_id
-  instance_type          = var.instance_type
-  key_name               = var.key_name
+  image_id      = var.ami_id
+  instance_type = var.instance_type
+  key_name      = var.key_name
 
   user_data = base64encode(data.template_file.ec2_user_data.rendered)
 
@@ -41,10 +41,10 @@ resource "aws_launch_template" "rsvp_launch_template" {
   }
 
   network_interfaces {
-    device_index = 0
+    device_index                = 0
     associate_public_ip_address = true
-    security_groups = [aws_security_group.instance_sg.id]
-    delete_on_termination = true
+    security_groups             = [aws_security_group.instance_sg.id]
+    delete_on_termination       = true
   }
 
   placement {
@@ -67,12 +67,12 @@ resource "aws_launch_template" "rsvp_launch_template" {
 }
 
 resource "aws_lb" "rsvp_lb" {
-  name               = var.lb_name
+  name = var.lb_name
 
   load_balancer_type = var.lb_type
   subnets            = data.terraform_remote_state.vpc.outputs.public_subnets
   internal           = "false"
-  security_groups = [aws_security_group.lb_sg.id]
+  security_groups    = [aws_security_group.lb_sg.id]
 
   tags = {
     Name = "${var.lb_name}-${var.environment}"
@@ -91,7 +91,7 @@ resource "aws_lb_listener" "rsvp_lb_listener_http" {
 }
 
 resource "aws_alb_listener_rule" "listener_rule" {
-  depends_on   = [aws_lb_target_group.rsvp_lb_target_group]
+  depends_on = [aws_lb_target_group.rsvp_lb_target_group]
 
   listener_arn = aws_lb_listener.rsvp_lb_listener_http.arn
   priority     = "100"
@@ -101,22 +101,23 @@ resource "aws_alb_listener_rule" "listener_rule" {
     target_group_arn = aws_lb_target_group.rsvp_lb_target_group.arn
   }
   condition {
-    field  = "path-pattern"
-    values = ["/"]
+    path_pattern {
+      values = ["/"]
+    }
   }
 }
 
 resource "aws_lb_target_group" "rsvp_lb_target_group" {
-  name     = "${var.resource_name_prefix}${var.environment}-tg"
+  name = "${var.resource_name_prefix}${var.environment}-tg"
 
-  vpc_id   = data.terraform_remote_state.vpc.outputs.vpc_id
-  port     = var.target_group_port
+  vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
+  port        = var.target_group_port
   target_type = var.target_type
-  protocol = "HTTP"
+  protocol    = "HTTP"
 
   health_check {
-    enabled = true
-    protocol = "HTTP"
+    enabled             = true
+    protocol            = "HTTP"
     healthy_threshold   = 3
     unhealthy_threshold = 10
     timeout             = 5
@@ -175,18 +176,18 @@ resource "aws_autoscaling_attachment" "attach_rsvp_asg_tg" {
 resource "aws_autoscaling_policy" "instance_scaling_up_policy" {
   autoscaling_group_name = aws_autoscaling_group.rsvp_asg.name
 
-  name                   = "rsvp_asg_scaling_up"
-  scaling_adjustment     = 1
-  adjustment_type        = "ChangeInCapacity"
-  cooldown               = 600
+  name               = "rsvp_asg_scaling_up"
+  scaling_adjustment = 1
+  adjustment_type    = "ChangeInCapacity"
+  cooldown           = 600
 }
 
 resource "aws_autoscaling_policy" "instance_scaling_down_policy" {
   autoscaling_group_name = aws_autoscaling_group.rsvp_asg.name
 
-  name                   = "rsvp_asg_scaling_down"
-  scaling_adjustment     = -1
-  adjustment_type        = "ChangeInCapacity"
-  cooldown               = 600
+  name               = "rsvp_asg_scaling_down"
+  scaling_adjustment = -1
+  adjustment_type    = "ChangeInCapacity"
+  cooldown           = 600
 }
 
