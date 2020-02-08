@@ -8,7 +8,7 @@ RSVP_LOCATION=/opt/${NAME}
 MAIN_CLASS=com.ddsolutions.kafka.RSVPCollectionApplication
 LOG_FOLDER=${RSVP_LOCATION}/logs
 PID_FILE=${LOG_FOLDER}/${NAME}.pid
-CONFIG_FOLDER="-Dspring.config.location=${RSVP_LOCATION}/config/application-dev.properties,${RSVP_LOCATION}/config/application-prod.properties"
+CONFIG_FOLDER="-Dspring.config.location=${RSVP_LOCATION}/config/application-${Environment}.properties"
 DAEMONOPTS="-jar -Dspring.profiles.active=${Environment} ${CONFIG_FOLDER} /opt/${NAME}/lib/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.jar"
 
 
