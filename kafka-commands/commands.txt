@@ -1,0 +1,16 @@
+#####================Zookeeper start command CLI======================#####
+zookeeper-server-start.bat config\zookeeper.properties
+
+
+#####================Kafka start command CLI==========================#####
+kafka-server-start.bat config\server.properties
+
+
+#####===================START KAFKA CONSUMER CONSOLE==============================####
+kafka-console-consumer --bootstrap-server localhost:9092 --topic twitterTopic --from-beginning
+
+kafka-console-consumer --bootstrap-server localhost:9092 --topic meetUpTopic --from-beginning
+
+
+#####=====================START KAFKA PRODUCER CONSOLE=================#####
+kafka-console-producer --broker-list localhost:9092 --topic meetUpTopic
