@@ -58,7 +58,7 @@
                 </encoder>
             </appender>
 
-            <logger name="com.ddsolutions.kafka" level='${LOG_LEVEL}' additivity="false">
+            <logger name="com.ddsolutions.kinesis" level='${LOG_LEVEL}' additivity="false">
                 <appender-ref ref="LOGSTASH" />
             </logger>
 
@@ -97,7 +97,7 @@
                 </encoder>
             </appender>
 
-            <logger name="com.ddsolutions.kafka" level="DEBUG" additivity="false">
+            <logger name="com.ddsolutions.kinesis" level="DEBUG" additivity="false">
                 <appender-ref ref="FILE" />
             </logger>
 

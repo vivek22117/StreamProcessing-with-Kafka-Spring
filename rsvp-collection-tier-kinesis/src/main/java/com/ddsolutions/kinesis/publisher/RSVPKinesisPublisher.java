@@ -1,11 +1,10 @@
-package com.ddsolutions.kafka.publisher;
+package com.ddsolutions.kinesis.publisher;
 
-import com.ddsolutions.kafka.domain.RSVPEventRecord;
-import com.ddsolutions.kafka.utility.GzipUtility;
-import com.ddsolutions.kafka.utility.JsonUtility;
+import com.ddsolutions.kinesis.domain.RSVPEventRecord;
+import com.ddsolutions.kinesis.utility.GzipUtility;
+import com.ddsolutions.kinesis.utility.JsonUtility;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

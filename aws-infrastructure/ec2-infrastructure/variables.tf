@@ -139,8 +139,13 @@ variable "target_group_path" {
 }
 
 variable "target_group_port" {
-  type        = string
-  description = "Port of target group instance"
+  type        = number
+  description = "The port on which targets receive traffic"
+}
+
+variable "health_check_port" {
+  type        = number
+  description = "The port to use to connect with the target for health check"
 }
 
 

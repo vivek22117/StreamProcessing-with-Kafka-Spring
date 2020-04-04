@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.ddsolutions.kafka</groupId>
-    <artifactId>rsvp-collection-tier-kafka</artifactId>
-    <name>rsvp-collection-tier-kafka</name>
+    <groupId>com.ddsolutions.kinesis</groupId>
+    <artifactId>rsvp-collection-tier-kinesis</artifactId>
+    <name>rsvp-collection-tier-kinesis</name>
     <description>Collection Tier for RSVPs</description>
     <version>0.0.1</version>
     <packaging>jar</packaging>
@@ -240,7 +240,7 @@
                             <Build-Date>${maven.build.timestamp}</Build-Date>
                         </manifestEntries>
                         <manifest>
-                            <mainClass>com.ddsolutions.kafka.RSVPCollectionApplication</mainClass>
+                            <mainClass>com.ddsolutions.kinesis.RSVPCollectionAppKinesis</mainClass>
                             <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>

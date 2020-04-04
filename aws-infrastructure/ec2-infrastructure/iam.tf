@@ -41,17 +41,6 @@ resource "aws_iam_policy" "rsvp_collection_policy" {
         "${data.terraform_remote_state.rsvp_lambda_kinesis.outputs.kinesis_arn}"
       ]
     },
-    {
-	  "Action": [
-	    "s3:ListBucket"
-      ],
-	  "Effect": "Allow",
-	  "Resource": [
-	    "arn:aws:s3:::rsvp-records-${var.environment}",
-        "arn:aws:s3:::teamconcept-deploy-*/*",
-        "arn:aws:s3:::teamconcept-deploy-*"
-			]
-	},
 	{
 	  "Action": [
 	    "s3:DeleteObject",

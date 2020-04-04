@@ -8,8 +8,8 @@ data "aws_caller_identity" "current" {}
 resource "aws_s3_bucket_object" "ec2-app-package" {
   bucket = data.terraform_remote_state.backend.outputs.aritfactory_bucket_name
   key    = var.ec2-webapp-bucket-key
-  source = "${path.module}/../../CollectionTier-Kafka/target/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.zip"
-  etag   = filemd5("${path.module}/../../CollectionTier-Kafka/target/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.zip")
+  source = "${path.module}/../../rsvp-collection-tier-kinesis/target/rsvp-collection-tier-kinesis-0.0.1-webapp.zip"
+  etag   = filemd5("${path.module}/../../rsvp-collection-tier-kinesis/target/rsvp-collection-tier-kinesis-0.0.1-webapp.zip")
 }
 
 ##################################################################
@@ -42,7 +42,7 @@ resource "aws_launch_template" "rsvp_launch_template" {
 
   network_interfaces {
     device_index                = 0
-    associate_public_ip_address = true
+    associate_public_ip_address = false
     security_groups             = [aws_security_group.instance_sg.id]
     delete_on_termination       = true
   }
@@ -64,6 +64,8 @@ resource "aws_launch_template" "rsvp_launch_template" {
   lifecycle {
     create_before_destroy = true
   }
+
+  tags = merge(local.common_tags, map("Name", "${var.component_name}-lt"))
 }
 
 resource "aws_lb" "rsvp_lb" {
@@ -74,9 +76,7 @@ resource "aws_lb" "rsvp_lb" {
   internal           = "false"
   security_groups    = [aws_security_group.lb_sg.id]
 
-  tags = {
-    Name = "${var.lb_name}-${var.environment}"
-  }
+  tags = merge(local.common_tags, map("Name", "${var.component_name}-lb"))
 }
 
 resource "aws_lb_listener" "rsvp_lb_listener_http" {
@@ -123,7 +123,7 @@ resource "aws_lb_target_group" "rsvp_lb_target_group" {
     timeout             = 5
     interval            = 10
     path                = var.target_group_path
-    port                = var.target_group_port
+    port                = var.health_check_port
   }
 
   tags = merge(local.common_tags, map("Name", "${var.resource_name_prefix}tg"))

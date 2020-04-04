@@ -1,4 +1,4 @@
-package com.ddsolutions.kafka.controller;
+package com.ddsolutions.kinesis.controller;
 
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
