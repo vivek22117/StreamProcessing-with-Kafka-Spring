@@ -1,5 +1,7 @@
 package com.ddsolutions.kafka.configuration;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -33,16 +35,16 @@ public class AppConfiguration {
     private static AwsCredentialsProvider awsCredentialsProvider;
     private ApplicationContext applicationContext;
 
-    @Value("${bootstrap.servers}")
+    @Value("${bootstrap.servers: No server value}")
     private String bootstrapServers;
 
-    @Value("${kafka.rsvp.topic}")
+    @Value("${kafka.rsvp.topic: No topic value}")
     private String topicName;
 
-    @Value("${isRunningInEC2}")
+    @Value("${isRunningInEC2: No value}")
     private boolean isRunningInEC2;
 
-    @Value("${isRunningInLocal}")
+    @Value("${isRunningInLocal: No value}")
     private boolean isRunningInLocal;
 
     @Autowired
@@ -52,7 +54,11 @@ public class AppConfiguration {
     }
 
     @Bean
-    @Profile(value = {"dev", "prod"})
+    public Gson createGson(){
+        return new GsonBuilder().setPrettyPrinting().create();
+    }
+
+    @Bean
     public KinesisClient createPublisherClient() {
         return KinesisClient.builder()
                 .credentialsProvider(getAwsCredentials())
@@ -60,7 +66,6 @@ public class AppConfiguration {
     }
 
     @Bean
-    @Profile(value = {"dev", "prod"})
     public Map<String, Object> producerConfig() {
         Map<String, Object> props = new HashMap<>(kafkaProperties.buildProducerProperties());
 
@@ -107,7 +112,7 @@ public class AppConfiguration {
             if (isRunningInEC2) {
                 awsCredentialsProvider = InstanceProfileCredentialsProvider.builder().build();
             } else if (isRunningInLocal) {
-                awsCredentialsProvider = ProfileCredentialsProvider.builder().profileName("doubledigit").build();
+                awsCredentialsProvider = ProfileCredentialsProvider.builder().profileName("admin").build();
             } else {
                 awsCredentialsProvider = DefaultCredentialsProvider.builder().build();
             }
