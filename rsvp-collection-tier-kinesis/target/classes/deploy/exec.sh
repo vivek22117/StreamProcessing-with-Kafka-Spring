@@ -5,11 +5,11 @@ source /etc/environment
 DAEMON="java"
 NAME="rsvp"
 RSVP_LOCATION=/opt/${NAME}
-MAIN_CLASS=com.ddsolutions.kafka.RSVPCollectionApplication
+MAIN_CLASS=com.ddsolutions.kinesis.RSVPCollectionAppKinesis
 LOG_FOLDER=${RSVP_LOCATION}/logs
 PID_FILE=${LOG_FOLDER}/${NAME}.pid
 CONFIG_FOLDER="-Dspring.config.location=${RSVP_LOCATION}/config/application-${Environment}.properties"
-DAEMONOPTS="-jar -Dspring.profiles.active=${Environment} ${CONFIG_FOLDER} /opt/${NAME}/lib/rsvp-collection-tier-kafka-kinesis-0.0.1-webapp.jar"
+DAEMONOPTS="-jar -Dspring.profiles.active=${Environment} ${CONFIG_FOLDER} /opt/${NAME}/lib/rsvp-collection-tier-kinesis-0.0.1-webapp.jar"
 
 
 JAVAOPTS=""
