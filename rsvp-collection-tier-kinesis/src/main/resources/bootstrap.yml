@@ -6,7 +6,9 @@ spring:
     name: rsvp-collection-service
   cloud:
     config:
-      uri: http://localhost:9001/
+#      uri: http://localhost:9001/
+      uri: http://config-server-ecs-alb-787882846.us-east-1.elb.amazonaws.com/
+      label: develop
   security:
     user:
       name: actuator
@@ -33,5 +35,3 @@ management:
           - shutdown
           - prometheus
       base-path: /internal
-  server:
-    port: 8006

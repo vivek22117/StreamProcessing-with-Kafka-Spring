@@ -15,6 +15,7 @@
         </then>
     </if>
 
+
     <if condition='"${Environment}".equalsIgnoreCase("dev")'>
         <then>
             <property name="IS_ENVIRONMENT_DEVL_QUAL_CERT_OR_PROD" value="false" />
@@ -101,19 +102,19 @@
                 <appender-ref ref="FILE" />
             </logger>
 
-            <logger name="com.amazonaws" level="ERROR" additivity="false">
+            <logger name="com.amazonaws" level="DEBUG" additivity="false">
                 <appender-ref ref="FILE" />
             </logger>
 
-            <logger name="org.springframework" level="ERROR" additivity="false">
+            <logger name="org.springframework" level="INFO" additivity="false">
                 <appender-ref ref="FILE" />
             </logger>
 
-            <logger name="org.apache" level="ERROR" additivity="false">
+            <logger name="org.apache" level="DEBUG" additivity="false">
                 <appender-ref ref="FILE" />
             </logger>
 
-            <root level="DEBUG">
+            <root level="INFO">
                 <appender-ref ref="FILE" />
             </root>
         </else>

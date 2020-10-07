@@ -43,6 +43,8 @@ public class RSVPKinesisPublisher {
 
     public void publish(WebSocketMessage<?> message) {
         RSVPEventRecord rsvpEventRecord = gson.fromJson(message.getPayload().toString(), RSVPEventRecord.class);
+        LOGGER.debug("RSVP Record..." + rsvpEventRecord.toString());
+
         List<RSVPEventRecord> rsvpEventRecords = Collections.singletonList(rsvpEventRecord);
 
         // Do some processing or enhancement of data
@@ -65,7 +67,10 @@ public class RSVPKinesisPublisher {
                                 .build()).collect(Collectors.toList());
 
         PutRecordsRequest putRecordsRequest =
-                PutRecordsRequest.builder().streamName(streamName).records(requestEntries).build();
+                PutRecordsRequest.builder()
+                        .streamName(streamName)
+                        .records(requestEntries)
+                        .build();
         PutRecordsResponse putRecordsResponse = kinesisClient.putRecords(putRecordsRequest);
         if (putRecordsResponse == null || putRecordsResponse.failedRecordCount() > 0) {
             LOGGER.error("Failed to publish records...");
