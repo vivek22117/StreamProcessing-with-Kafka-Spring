@@ -1,5 +1,5 @@
 # create a service role for codedeploy
-resource "aws_iam_role" "rsvp_codedeploy_role" {
+resource "aws_iam_role" "rsvp_code_deploy_role" {
   name = "RSVPCodeDeployServiceRole"
 
   assume_role_policy = <<EOF
@@ -22,7 +22,7 @@ EOF
 }
 
 #Code deploy access policy
-resource "aws_iam_policy" "rsvp_codedeploy_policy" {
+resource "aws_iam_policy" "rsvp_code_deploy_policy" {
   name = "RSVPCodeDeployServicePolicy"
   description = "Policy to access AWS Resources"
   path = "/"
@@ -92,10 +92,10 @@ EOF
 }
 
 
-#Code deploy policy role attachement
-resource "aws_iam_role_policy_attachment" "codedeployo_policy_role_attach" {
-  policy_arn = aws_iam_policy.rsvp_codedeploy_policy.arn
-  role       = aws_iam_role.rsvp_codedeploy_role.name
+#Code deploy policy role attachment
+resource "aws_iam_role_policy_attachment" "code_deploy_policy_role_attach" {
+  policy_arn = aws_iam_policy.rsvp_code_deploy_policy.arn
+  role       = aws_iam_role.rsvp_code_deploy_role.name
 }
 
 
