@@ -28,7 +28,7 @@ wait_for_capacity_timeout          = "7m"
 lb_name           = "rsvp-collection-tier-lb"
 target_group_path = "/internal/health"
 target_group_port = 9006
-health_check_port = 8006
+health_check_port = 9006
 lb_type           = "application"
 
 target_type = "instance"

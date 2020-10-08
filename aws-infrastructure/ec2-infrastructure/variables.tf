@@ -159,6 +159,7 @@ variable "custom_tags" {
     tool       = "Terraform"
     monitoring = "true"
     Name       = "rsvp-collection-tier"
+    Project    = "DoubleDigit-Solutions"
   }
 }
 

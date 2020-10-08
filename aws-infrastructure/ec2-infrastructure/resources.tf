@@ -20,7 +20,7 @@ resource "aws_s3_bucket_object" "ec2-app-package" {
 resource "aws_launch_template" "rsvp_launch_template" {
   name_prefix = "${var.resource_name_prefix}${var.environment}"
 
-  image_id      = var.ami_id
+  image_id      = data.aws_ami.ec2_server.id
   instance_type = var.instance_type
   key_name      = var.key_name
 
@@ -65,40 +65,45 @@ resource "aws_launch_template" "rsvp_launch_template" {
     create_before_destroy = true
   }
 
-  tags = merge(local.common_tags, map("Name", "${var.component_name}-lt"))
+  tag_specifications {
+    resource_type = "instance"
+    tags          = merge(local.common_tags, map("Project", "DoubleDigit-Solutions"))
+  }
 }
 
-resource "aws_lb" "rsvp_lb" {
+resource "aws_alb" "rsvp_lb" {
   name = var.lb_name
 
   load_balancer_type = var.lb_type
   subnets            = data.terraform_remote_state.vpc.outputs.public_subnets
   internal           = "false"
   security_groups    = [aws_security_group.lb_sg.id]
+  enable_http2       = "true"
+  idle_timeout       = 600
 
   tags = merge(local.common_tags, map("Name", "${var.component_name}-lb"))
 }
 
-resource "aws_lb_listener" "rsvp_lb_listener_http" {
-  load_balancer_arn = aws_lb.rsvp_lb.arn
+resource "aws_alb_listener" "rsvp_lb_listener_http" {
+  load_balancer_arn = aws_alb.rsvp_lb.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.rsvp_lb_target_group.arn
+    target_group_arn = aws_alb_target_group.rsvp_lb_target_group.arn
   }
 }
 
 resource "aws_alb_listener_rule" "listener_rule" {
-  depends_on = [aws_lb_target_group.rsvp_lb_target_group]
+  depends_on = [aws_alb_target_group.rsvp_lb_target_group]
 
-  listener_arn = aws_lb_listener.rsvp_lb_listener_http.arn
+  listener_arn = aws_alb_listener.rsvp_lb_listener_http.arn
   priority     = "100"
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.rsvp_lb_target_group.arn
+    target_group_arn = aws_alb_target_group.rsvp_lb_target_group.arn
   }
   condition {
     path_pattern {
@@ -107,7 +112,7 @@ resource "aws_alb_listener_rule" "listener_rule" {
   }
 }
 
-resource "aws_lb_target_group" "rsvp_lb_target_group" {
+resource "aws_alb_target_group" "rsvp_lb_target_group" {
   name = "${var.resource_name_prefix}${var.environment}-tg"
 
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
@@ -123,7 +128,7 @@ resource "aws_lb_target_group" "rsvp_lb_target_group" {
     timeout             = 5
     interval            = 10
     path                = var.target_group_path
-    port                = var.health_check_port
+    matcher             = "200,301,302"
   }
 
   tags = merge(local.common_tags, map("Name", "${var.resource_name_prefix}tg"))
@@ -133,14 +138,14 @@ resource "aws_autoscaling_group" "rsvp_asg" {
   depends_on = [aws_s3_bucket_object.ec2-app-package]
 
   name_prefix         = "rsvp-asg-${var.environment}"
-  vpc_zone_identifier = data.terraform_remote_state.vpc.outputs.public_subnets
+  vpc_zone_identifier = data.terraform_remote_state.vpc.outputs.private_subnets
 
   launch_template {
     id      = aws_launch_template.rsvp_launch_template.id
     version = aws_launch_template.rsvp_launch_template.latest_version
   }
 
-  target_group_arns = [aws_lb_target_group.rsvp_lb_target_group.arn]
+  target_group_arns = [aws_alb_target_group.rsvp_lb_target_group.arn]
 
   termination_policies      = var.termination_policies
   max_size                  = var.rsvp_asg_max_size
@@ -170,7 +175,7 @@ resource "aws_autoscaling_group" "rsvp_asg" {
 
 resource "aws_autoscaling_attachment" "attach_rsvp_asg_tg" {
   autoscaling_group_name = aws_autoscaling_group.rsvp_asg.id
-  alb_target_group_arn   = aws_lb_target_group.rsvp_lb_target_group.arn
+  alb_target_group_arn   = aws_alb_target_group.rsvp_lb_target_group.arn
 }
 
 resource "aws_autoscaling_policy" "instance_scaling_up_policy" {
@@ -190,4 +195,3 @@ resource "aws_autoscaling_policy" "instance_scaling_down_policy" {
   adjustment_type    = "ChangeInCapacity"
   cooldown           = 600
 }
-

@@ -15,8 +15,8 @@ resource "aws_security_group" "instance_sg" {
 
 resource "aws_security_group_rule" "allow_traffic_from_lb" {
   type                     = "ingress"
-  from_port                = 2020
-  to_port                  = 2020
+  from_port                = var.target_group_port
+  to_port                  = var.target_group_port
   protocol                 = "tcp"
   security_group_id        = aws_security_group.instance_sg.id
   source_security_group_id = aws_security_group.lb_sg.id

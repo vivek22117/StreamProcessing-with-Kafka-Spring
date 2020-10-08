@@ -56,7 +56,7 @@ data "template_file" "ec2_user_data" {
   vars = {
     aws_region         = var.default_region
     environment        = var.environment
-    rsvp_deploy_bucket = data.terraform_remote_state.backend.outputs.aritfactory_bucket_name
+    rsvp_deploy_bucket = data.terraform_remote_state.backend.outputs.artifactory_bucket_name
     rsvp_app_key       = var.ec2-webapp-bucket-key
     rsvp_group_name    = data.terraform_remote_state.code_deploy_backend.outputs.rsvp_app_group_name
     rsvp_app_name      = data.terraform_remote_state.code_deploy_backend.outputs.rsvp_app_name
