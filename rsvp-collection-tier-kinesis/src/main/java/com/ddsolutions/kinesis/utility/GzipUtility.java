@@ -58,7 +58,7 @@ public class GzipUtility {
              ObjectOutputStream output = new ObjectOutputStream(bos)
         ) {
             output.writeObject(rsvpEventRecord);
-            LOGGER.info("Object has been serialized");
+            LOGGER.debug("Object has been serialized");
             return Base64.getEncoder().encode(bos.toByteArray());
         } catch (Exception ex) {
             LOGGER.error("Cannot perform output", ex);

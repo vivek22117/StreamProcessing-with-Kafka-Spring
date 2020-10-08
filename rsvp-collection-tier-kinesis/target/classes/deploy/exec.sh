@@ -8,12 +8,12 @@ RSVP_LOCATION=/opt/${NAME}
 MAIN_CLASS=com.ddsolutions.kinesis.RSVPCollectionAppKinesis
 LOG_FOLDER=${RSVP_LOCATION}/logs
 PID_FILE=${LOG_FOLDER}/${NAME}.pid
-CONFIG_FOLDER="-Dspring.config.location=${RSVP_LOCATION}/config/application-${Environment}.properties"
-DAEMONOPTS="-jar -Dspring.profiles.active=${Environment} ${CONFIG_FOLDER} /opt/${NAME}/lib/rsvp-collection-tier-kinesis-0.0.1-webapp.jar"
+#CONFIG_FOLDER="-Dspring.config.location=${RSVP_LOCATION}/config/application-${Environment}.properties"
+DAEMONOPTS="-jar -Dspring.profiles.active=${Environment} /opt/${NAME}/lib/rsvp-collection-tier-kinesis-0.0.1-webapp.jar"
 
 
 JAVAOPTS=""
-if [[ "${Environment}" == "dev" ]]; then
+if [[ "${Environment}" == "qa" ]]; then
   JAVAOPTS="-Xms512m -Xmx1024m"
 elif [[ "${Environment}" == "prod" ]]; then
   JAVAOPTS="-Xms1024m -Xmx2048m"
