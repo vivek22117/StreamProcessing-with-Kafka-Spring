@@ -1,5 +1,10 @@
 package com.ddsolutions.kafka.configuration;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.auth.EC2ContainerCredentialsProviderWrapper;
+import com.amazonaws.services.kinesis.producer.KinesisProducer;
+import com.amazonaws.services.kinesis.producer.KinesisProducerConfiguration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -33,6 +38,8 @@ public class AppConfiguration {
 
     private final KafkaProperties kafkaProperties;
     private static AwsCredentialsProvider awsCredentialsProvider;
+    private static AWSCredentialsProvider authAWSCredentialsProvider;
+
     private ApplicationContext applicationContext;
 
     @Value("${bootstrap.servers: No server value}")
@@ -66,6 +73,24 @@ public class AppConfiguration {
     }
 
     @Bean
+    @Autowired
+    public KinesisProducer createKinesisProducer(KinesisProducerConfiguration config) {
+        return new KinesisProducer(config);
+    }
+
+    @Bean
+    public KinesisProducerConfiguration KinesisProducerConfig() {
+        KinesisProducerConfiguration config = new KinesisProducerConfiguration();
+        config.setRegion(Region.US_EAST_1.toString());
+        config.setCredentialsProvider(getAuthAWSCredentials());
+        config.setMaxConnections(1);
+        config.setRequestTimeout(6000);
+        config.setRecordMaxBufferedTime(1000);
+
+        return config;
+    }
+
+
     public Map<String, Object> producerConfig() {
         Map<String, Object> props = new HashMap<>(kafkaProperties.buildProducerProperties());
 
@@ -118,5 +143,18 @@ public class AppConfiguration {
             }
         }
         return awsCredentialsProvider;
+    }
+
+    private AWSCredentialsProvider getAuthAWSCredentials() {
+        if (authAWSCredentialsProvider == null) {
+            if (isRunningInEC2) {
+                authAWSCredentialsProvider = new com.amazonaws.auth.InstanceProfileCredentialsProvider(false);
+            } else if (isRunningInLocal) {
+                authAWSCredentialsProvider = new com.amazonaws.auth.profile.ProfileCredentialsProvider("qa-admin");
+            } else {
+                authAWSCredentialsProvider = new DefaultAWSCredentialsProviderChain();
+            }
+        }
+        return authAWSCredentialsProvider;
     }
 }
