@@ -66,6 +66,14 @@
             <version>2.2.0</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/amazon-kinesis-producer -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>amazon-kinesis-producer</artifactId>
+            <version>0.14.6</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
