@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
@@ -82,12 +81,10 @@ public class RSVPKCLPublisherImpl implements RSVPKCLPublisher {
         ByteBuffer data = null;
         data = ByteBuffer.wrap(payload.getBytes(StandardCharsets.UTF_8));
 
-        // wait until unfinished records are processed
         while (kinesisProducer.getOutstandingRecordsCount() > 1) {
             Thread.sleep(1);
         }
 
-        // write data to Kinesis stream
         ListenableFuture<UserRecordResult> result =
                 kinesisProducer.addUserRecord(streamName, TIMESTAMP_AS_PARTITION_KEY, data);
         Futures.addCallback(result, futureCallback, callbackThreadPool);
